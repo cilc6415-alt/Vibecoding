@@ -17,22 +17,39 @@ const dmSans = DM_Sans({
   display: "swap",
 })
 
+function getMetadataBase() {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return new URL(process.env.NEXT_PUBLIC_APP_URL)
+  }
+  if (config.app.domain) {
+    return new URL(`https://${config.app.domain}`)
+  }
+  return new URL(config.app.defaultUrl)
+}
+
+const shareTitle = config.app.name
+const shareDescription = config.app.description
+
 export const metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || config.app.defaultUrl
-  ),
+  metadataBase: getMetadataBase(),
   title: {
     default: config.app.name,
     template: `%s · ${config.app.name}`,
   },
-  description: config.app.description,
+  description: shareDescription,
   openGraph: {
-    title: config.app.name,
-    description: config.app.description,
+    title: shareTitle,
+    description: shareDescription,
     type: "website",
     locale: config.app.locale === "es" ? "es_MX" : "en_US",
+    siteName: config.app.name,
+    url: "/",
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    title: shareTitle,
+    description: shareDescription,
+  },
   icons: { icon: "/favicon.svg" },
 }
 

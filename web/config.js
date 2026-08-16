@@ -22,10 +22,10 @@ const config = {
   // Identidad del producto
   // -----------------------------------------------------------
   app: {
-    name: "Vibecoding",
+    name: "IVCA Crafts",
     description:
-      "Plantilla del curso Vibe Code con Change and Code. Publica tu landing y usa la IA para construir tu negocio.",
-    domain: "vibecoding.dev", // sin https://, sin www
+      "Productos personalizados pintados a mano, creados para hacer único cada momento.",
+    domain: "ivcacrafts.com", // sin https://, sin www
     locale: "es", // "es" | "en"
     // URL pública: usa NEXT_PUBLIC_APP_URL en .env. En este config solo definimos el default.
     defaultUrl: "http://localhost:3000",
@@ -36,9 +36,9 @@ const config = {
   // -----------------------------------------------------------
   brand: {
     // Color primario en HEX. DaisyUI lo aplica como --color-primary via theme.
-    primary: "#0ea5e9", // sky-500 (azul cielo)
+    primary: "#7B3FF2", // sky-500 (azul cielo)
     // Logo: puede ser texto o ruta a /public/logo.svg
-    logoText: "Vibecoding",
+    logoText:"IVCA Crafts",
     logoSrc: null,
     // Estilo del bordeado global (DaisyUI usa esto para botones, cards)
     radius: "1rem",
@@ -114,11 +114,19 @@ const config = {
     ],
     hero: {
       eyebrow: "Curso Vibe Code · Change and Code",
-      title: "Publica tu landing y ponle IA a tu negocio.",
+      title: "Hazlo tuyo, obten algo unico.",
       subtitle:
         "Esta plantilla es tu punto de partida en el curso: página lista para publicar, captura de leads y IA integrada. Tú la haces tuya describiendo lo que quieres — la IA escribe el código.",
       cta: { label: "Apúntate a la lista", href: "#waitlist" },
       ctaSecondary: { label: "Ver docs", href: "/docs" },
+    },
+    clients: {
+      title: "Creado para quienes buscan algo único",
+      logo: {
+        src: "/logo-ivca.png",
+        alt: "IVCA Crafts",
+      },
+      placeholderCount: 3,
     },
     problem: {
       eyebrow: "El problema",
@@ -149,34 +157,19 @@ const config = {
       subtitle: "Tú te enfocas en tu negocio; la plantilla pone la parte técnica.",
       items: [
         {
-          icon: "Rocket",
-          title: "Landing lista para publicar",
-          body: "Edita config.js con los textos de tu negocio y tienes página propia con URL pública.",
+          icon: "Smartphone",
+          title: "Funda para celular",
+          body: "Protege tu celular con un diseño pintado a mano, hecho solo para ti y sin repetir en serie.",
         },
         {
-          icon: "Users",
-          title: "Leads sin hojas de cálculo",
-          body: "Formulario de registro + panel /admin para ver a cada interesado, con fecha y fuente.",
+          icon: "Wine",
+          title: "Termo Wine 12 oz",
+          body: "Mantén tu bebida a la temperatura ideal con un termo personalizado que lleva arte en cada trazo.",
         },
         {
-          icon: "Database",
-          title: "Base de datos + login",
-          body: "Supabase con tablas pre-modeladas, seguridad RLS y entrada con Google. Sin diseñar nada desde cero.",
-        },
-        {
-          icon: "Mail",
-          title: "Emails automáticos",
-          body: "Resend manda la bienvenida y los avisos de tu negocio por ti.",
-        },
-        {
-          icon: "Sparkles",
-          title: "IA integrada",
-          body: "Chat con tus datos, tool use y structured outputs listos para activar cuando los necesites.",
-        },
-        {
-          icon: "Bot",
-          title: "Agentes (opcional)",
-          body: "Si tu negocio tiene tareas de varios pasos, trae agentes LangGraph para que la IA trabaje sola.",
+          icon: "KeyRound",
+          title: "Llaveros de resina",
+          body: "Lleva contigo un detalle único con formas, colores y acabados elaborados pieza por pieza.",
         },
       ],
     },
@@ -185,20 +178,20 @@ const config = {
       title: "Lo que todos preguntan antes de arrancar.",
       items: [
         {
-          q: "¿Necesito saber programar?",
-          a: "No. El curso asume emprendedores no técnicos. Construyes describiéndole a la IA lo que quieres; la plantilla hace el resto.",
+          q: "¿Qué colores manejas?",
+          a: "Trabajamos con una paleta amplia y podemos mezclar tonos según tu idea; también aceptamos fotos de referencia para acercarnos al color que buscas.",
         },
         {
-          q: "¿Cuánto cuesta correr esto?",
-          a: "Vercel y Supabase tienen planes gratuitos generosos. OpenAI cobra por uso: con gpt-4o-mini, el costo de un MVP del curso ronda US$5-20.",
+          q: "¿Manejas otras medidas de termos?",
+          a: "Sí, además del Wine 12 oz podemos cotizar otras capacidades y modelos según disponibilidad; escríbenos y te confirmamos opciones.",
         },
         {
-          q: "¿Puedo cambiar el stack?",
-          a: "Sí, pero las docs asumen este stack. Cambiar pieza por pieza es posible cuando termines el curso.",
+          q: "¿Cuál es el tiempo de entrega?",
+          a: "Cada pieza se pinta a mano, así que el tiempo habitual es de 5 a 10 días hábiles; al confirmar tu pedido te damos la fecha exacta.",
         },
         {
-          q: "¿Y si me atoro?",
-          a: "Las docs incluyen una sección de troubleshooting con los 20 errores más comunes. Además tienes las sesiones del curso para preguntar.",
+          q: "¿Cómo hago pedido?",
+          a: "Contáctanos por WhatsApp o el formulario de esta página con el producto, diseño y cantidad; te enviamos cotización y arrancamos cuando la apruebes.",
         },
       ],
     },

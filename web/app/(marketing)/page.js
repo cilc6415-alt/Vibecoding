@@ -1,4 +1,5 @@
 import Hero from "@/components/landing/Hero"
+import ClientLogos from "@/components/landing/ClientLogos"
 import Problem from "@/components/landing/Problem"
 import Features from "@/components/landing/Features"
 import Pricing from "@/components/landing/Pricing"
@@ -11,6 +12,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <ClientLogos />
       <Problem />
       <Features />
       {config.features.pricing && <Pricing />}
