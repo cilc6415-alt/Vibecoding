@@ -131,31 +131,31 @@ const config = {
     },
     problem: {
       eyebrow: "El problema",
-      title: "Tu negocio necesita presencia digital, no un título en sistemas.",
+      title: "Cuesta encontrar un regalo que se sienta realmente único.",
       subtitle:
-        "La mayoría de los emprendedores se quedan fuera de lo digital por creer que es caro o complicado.",
+        "La mayoría de las tiendas venden lo mismo en serie: bonito, sí, pero sin historia ni valor emocional.",
       items: [
         {
-          icon: "Timer",
-          title: "Meses cotizando",
-          body: "Una página 'profesional' te la cotizan cara y tarda meses. Mientras, tus clientes te buscan y no te encuentran.",
+          icon: "SearchX",
+          title: "Todo se ve igual",
+          body: "Buscas algo original y encuentras los mismos productos fabricados en masa, sin personalidad.",
         },
         {
-          icon: "Puzzle",
-          title: "Herramientas que abruman",
-          body: "Dominio, hosting, base de datos… cada término suena a otro idioma y nadie te lo explica en simple.",
+          icon: "HeartOff",
+          title: "Sin valor emocional",
+          body: "Un detalle genérico se olvida; quieres un regalo que hable de la persona, no de un catálogo.",
         },
         {
-          icon: "PlugZap",
-          title: "La IA cambió las reglas",
-          body: "Hoy puedes construirlo tú, describiendo lo que necesitas en español. Solo te falta la base correcta.",
+          icon: "Copy",
+          title: "Nada es exclusivo",
+          body: "Si mil personas pueden comprar lo mismo, deja de sentirse especial el día que lo entregas.",
         },
       ],
     },
     features: {
-      eyebrow: "Lo que ya viene listo",
-      title: "Todo lo del curso, ya cableado.",
-      subtitle: "Tú te enfocas en tu negocio; la plantilla pone la parte técnica.",
+      eyebrow: "Piezas a mano",
+      title: "Tres formas de regalar algo irrepetible.",
+      subtitle: "Cada diseño se pinta pieza por pieza: original, exclusivo y con tu historia.",
       items: [
         {
           icon: "Smartphone",
@@ -176,7 +176,7 @@ const config = {
     },
     faq: {
       eyebrow: "Preguntas frecuentes",
-      title: "Lo que todos preguntan antes de arrancar.",
+      title: "Lo que más preguntan antes de pedir.",
       items: [
         {
           q: "¿Qué colores manejas?",
@@ -197,24 +197,24 @@ const config = {
       ],
     },
     finalCta: {
-      eyebrow: "Tu turno",
-      title: "Deja de posponerlo. Publica tu negocio.",
+      eyebrow: "Tu pieza",
+      title: "Regala algo que no se encuentra en serie.",
       subtitle:
-        "Edita config.js con los datos de tu negocio, describe lo que quieres y ten tu página en línea esta misma semana.",
-      cta: { label: "Apúntate a la lista", href: "#waitlist" },
-      ctaSecondary: { label: "Leer las docs", href: "/docs" },
+        "Cuéntanos a quién va dirigido y qué te imaginas: lo pintamos a mano para que se sienta único.",
+      cta: { label: "Pide tu pieza", href: "#waitlist" },
+      ctaSecondary: { label: "Ver productos", href: "#features" },
     },
     waitlist: {
-      eyebrow: "Únete primero",
-      title: "Sé de los primeros en saber.",
-      subtitle: "Déjanos tu correo y te avisamos cuando esto arranque.",
-      successMessage: "¡Listo! Te avisamos en cuanto haya novedades.",
-      buttonLabel: "Quiero entrar",
+      eyebrow: "Haz tu pedido",
+      title: "Cuéntanos qué pieza quieres.",
+      subtitle: "Déjanos tu correo y te escribimos para armar tu diseño personalizado.",
+      successMessage: "¡Listo! Te contactamos para cotizar tu pieza.",
+      buttonLabel: "Quiero mi pieza",
       placeholder: "tu@email.com",
     },
     footer: {
       tagline:
-        "Hecho por Pedro Gutiérrez (Roni) para el curso Vibe Code · Change and Code × Startup Chihuahua.",
+        "IVCA Crafts · termos, fundas y llaveros pintados a mano, con amor.",
       columns: [
         {
           title: "Producto",
@@ -255,28 +255,28 @@ const config = {
   // -----------------------------------------------------------
   pricing: {
     eyebrow: "Precios",
-    title: "Simple y sin sorpresas.",
-    subtitle: "Empieza gratis. Sube de plan cuando tu producto crezca.",
+    title: "Piezas a tu medida, sin sorpresas.",
+    subtitle: "Elige un detalle o arma un set. Cada uno se pinta a mano.",
     plans: [
       {
         id: "starter",
-        name: "Starter",
+        name: "Un detalle",
         price: 0,
         currency: "USD",
-        interval: "mes",
-        description: "Para probar el producto.",
-        features: ["Hasta 100 usuarios", "Soporte por email", "Branding Vibecoding"],
-        cta: "Empezar gratis",
+        interval: "pieza",
+        description: "Para un regalo personalizado.",
+        features: ["1 pieza pintada a mano", "Colores a tu gusto", "Cotización por mensaje"],
+        cta: "Pedir un detalle",
       },
       {
         id: "pro",
-        name: "Pro",
-        price: 29,
+        name: "Set especial",
+        price: 0,
         currency: "USD",
-        interval: "mes",
-        description: "Para founders que ya facturan.",
-        features: ["Usuarios ilimitados", "Soporte prioritario", "Sin branding"],
-        cta: "Probar Pro",
+        interval: "set",
+        description: "Para un regalo más completo.",
+        features: ["Termo, funda o llavero", "Diseño exclusivo", "Prioridad en entrega"],
+        cta: "Armar mi set",
         highlighted: true,
       },
     ],

@@ -49,7 +49,7 @@ export default function Hero() {
           )}
         </div>
 
-        <p className="mt-4 text-sm text-base-content/50">Gratis para empezar · sin tarjeta</p>
+        <p className="mt-4 text-sm text-base-content/50">Pintado a mano · cada pieza es única</p>
       </div>
 
       {/* Mockup de producto (navegador con la app dentro) */}
