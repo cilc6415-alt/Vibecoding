@@ -18,13 +18,22 @@ const dmSans = DM_Sans({
 })
 
 function getMetadataBase() {
-  if (process.env.NEXT_PUBLIC_APP_URL) {
-    return new URL(process.env.NEXT_PUBLIC_APP_URL)
+  const candidates = [
+    process.env.NEXT_PUBLIC_APP_URL,
+    config.app.domain ? `https://${config.app.domain}` : null,
+    config.app.defaultUrl,
+  ]
+
+  for (const candidate of candidates) {
+    if (!candidate) continue
+    try {
+      return new URL(candidate)
+    } catch {
+      // Valor inválido en Vercel (ej. sin https://): probar el siguiente.
+    }
   }
-  if (config.app.domain) {
-    return new URL(`https://${config.app.domain}`)
-  }
-  return new URL(config.app.defaultUrl)
+
+  return new URL("http://localhost:3000")
 }
 
 const shareTitle = config.app.name

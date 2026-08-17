@@ -29,48 +29,53 @@ export async function updateSession(request) {
   // dejamos pasar todo para que la landing (Sem 1) funcione igual.
   if (!url || !anonKey) return response
 
-  const supabase = createServerClient(
-    url,
-    anonKey,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
+  try {
+    const supabase = createServerClient(
+      url,
+      anonKey,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) =>
+              request.cookies.set(name, value)
+            )
+            response = NextResponse.next({ request })
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            )
+          },
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          )
-          response = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          )
-        },
-      },
+      }
+    )
+
+    // IMPORTANTE: no metas lógica entre createServerClient y getUser().
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    const { pathname } = request.nextUrl
+    const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))
+
+    if (isProtected && !user) {
+      const loginUrl = request.nextUrl.clone()
+      loginUrl.pathname = config.auth.loginUrl
+      loginUrl.searchParams.set("next", pathname)
+      return NextResponse.redirect(loginUrl)
     }
-  )
 
-  // IMPORTANTE: no metas lógica entre createServerClient y getUser().
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    // Si ya hay sesión y va a /login, mándalo al dashboard.
+    if (user && pathname === config.auth.loginUrl) {
+      const afterLogin = request.nextUrl.clone()
+      afterLogin.pathname = config.auth.afterLoginUrl
+      return NextResponse.redirect(afterLogin)
+    }
 
-  const { pathname } = request.nextUrl
-  const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p))
-
-  if (isProtected && !user) {
-    const url = request.nextUrl.clone()
-    url.pathname = config.auth.loginUrl
-    url.searchParams.set("next", pathname)
-    return NextResponse.redirect(url)
+    return response
+  } catch {
+    // Env mal formada o Supabase caído: no tumbar toda la app con 500.
+    return response
   }
-
-  // Si ya hay sesión y va a /login, mándalo al dashboard.
-  if (user && pathname === config.auth.loginUrl) {
-    const url = request.nextUrl.clone()
-    url.pathname = config.auth.afterLoginUrl
-    return NextResponse.redirect(url)
-  }
-
-  return response
 }

@@ -24,7 +24,7 @@ const config = {
   app: {
     name: "IVCA Crafts",
     description:
-      "Productos personalizados pintados a mano, creados para hacer único cada momento.",
+      "Termos, fundas y llaveros personalizados, pintados a mano para regalos únicos con valor emocional.",
     domain: "ivcacrafts.com", // sin https://, sin www
     locale: "es", // "es" | "en"
     // URL pública: usa NEXT_PUBLIC_APP_URL en .env. En este config solo definimos el default.
@@ -36,9 +36,10 @@ const config = {
   // -----------------------------------------------------------
   brand: {
     // Color primario en HEX. DaisyUI lo aplica como --color-primary via theme.
-    primary: "#7B3FF2", // sky-500 (azul cielo)
+    // Rosa magenta del logo acuarela: cálido, artesanal y distinto al violeta genérico.
+    primary: "#C94A8A",
     // Logo: puede ser texto o ruta a /public/logo.svg
-    logoText:"IVCA Crafts",
+    logoText: "IVCA Crafts",
     logoSrc: null,
     // Estilo del bordeado global (DaisyUI usa esto para botones, cards)
     radius: "1rem",
@@ -113,12 +114,12 @@ const config = {
       { label: "Docs", href: "/docs" },
     ],
     hero: {
-      eyebrow: "Curso Vibe Code · Change and Code",
-      title: "Hazlo tuyo, obten algo unico.",
+      eyebrow: "Hecho a mano · Pieza única",
+      title: "Regalos personalizados que se sienten de verdad.",
       subtitle:
-        "Esta plantilla es tu punto de partida en el curso: página lista para publicar, captura de leads y IA integrada. Tú la haces tuya describiendo lo que quieres — la IA escribe el código.",
-      cta: { label: "Apúntate a la lista", href: "#waitlist" },
-      ctaSecondary: { label: "Ver docs", href: "/docs" },
+        "Termos, fundas y llaveros pintados a mano para quienes buscan algo original, exclusivo y con historia.",
+      cta: { label: "Pide tu pieza", href: "#waitlist" },
+      ctaSecondary: { label: "Ver productos", href: "#features" },
     },
     clients: {
       title: "Creado para quienes buscan algo único",
@@ -159,17 +160,17 @@ const config = {
         {
           icon: "Smartphone",
           title: "Funda para celular",
-          body: "Protege tu celular con un diseño pintado a mano, hecho solo para ti y sin repetir en serie.",
+          body: "Un diseño pintado a mano, hecho solo para ti, que no se parece a nada de fábrica.",
         },
         {
           icon: "Wine",
           title: "Termo Wine 12 oz",
-          body: "Mantén tu bebida a la temperatura ideal con un termo personalizado que lleva arte en cada trazo.",
+          body: "Mantén tu bebida lista y luce un termo personalizado con arte en cada trazo.",
         },
         {
           icon: "KeyRound",
           title: "Llaveros de resina",
-          body: "Lleva contigo un detalle único con formas, colores y acabados elaborados pieza por pieza.",
+          body: "Un detalle único con formas, colores y acabados elaborados pieza por pieza.",
         },
       ],
     },
@@ -179,19 +180,19 @@ const config = {
       items: [
         {
           q: "¿Qué colores manejas?",
-          a: "Trabajamos con una paleta amplia y podemos mezclar tonos según tu idea; también aceptamos fotos de referencia para acercarnos al color que buscas.",
+          a: "Trabajamos una paleta amplia y mezclamos tonos a tu gusto; si traes foto de referencia, nos acercamos a ese color.",
         },
         {
           q: "¿Manejas otras medidas de termos?",
-          a: "Sí, además del Wine 12 oz podemos cotizar otras capacidades y modelos según disponibilidad; escríbenos y te confirmamos opciones.",
+          a: "Sí. Además del Wine 12 oz cotizamos otras capacidades y modelos según disponibilidad.",
         },
         {
           q: "¿Cuál es el tiempo de entrega?",
-          a: "Cada pieza se pinta a mano, así que el tiempo habitual es de 5 a 10 días hábiles; al confirmar tu pedido te damos la fecha exacta.",
+          a: "Como cada pieza se pinta a mano, el tiempo habitual es de 5 a 10 días hábiles; al confirmar te damos la fecha exacta.",
         },
         {
           q: "¿Cómo hago pedido?",
-          a: "Contáctanos por WhatsApp o el formulario de esta página con el producto, diseño y cantidad; te enviamos cotización y arrancamos cuando la apruebes.",
+          a: "Escríbenos por WhatsApp o deja tus datos en esta página con producto, diseño y cantidad; te enviamos cotización y arrancamos al aprobar.",
         },
       ],
     },
