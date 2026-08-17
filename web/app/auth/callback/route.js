@@ -1,4 +1,5 @@
 import { NextResponse, after } from "next/server"
+import { cookies } from "next/headers"
 import { createClient } from "@/lib/supabase/server"
 import { sendWelcome } from "@/lib/resend/send"
 
@@ -9,10 +10,19 @@ const FIRST_LOGIN_WINDOW_MS = 10_000
 // Callback de OAuth. Supabase redirige aquí con un `code` que
 // intercambiamos por una sesión (cookies). Luego mandamos al
 // usuario a `next` (o /dashboard por default).
+function safeNextPath(value) {
+  if (typeof value !== "string") return "/dashboard"
+  if (!value.startsWith("/") || value.startsWith("//")) return "/dashboard"
+  return value
+}
+
 export async function GET(request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get("code")
-  const next = searchParams.get("next") ?? "/dashboard"
+  const cookieStore = await cookies()
+  const next = safeNextPath(
+    searchParams.get("next") || cookieStore.get("sb-auth-next")?.value
+  )
 
   if (code) {
     const supabase = await createClient()
