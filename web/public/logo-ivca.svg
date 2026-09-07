@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="900" viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ink" x1="0%" y1="55%" x2="100%" y2="40%">
+      <stop offset="0%" stop-color="#9B0F4A"/>
+      <stop offset="18%" stop-color="#E01E7A"/>
+      <stop offset="40%" stop-color="#E94098"/>
+      <stop offset="58%" stop-color="#7ECFCF"/>
+      <stop offset="80%" stop-color="#2BB8B0"/>
+      <stop offset="100%" stop-color="#C8F5F2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Parche negro con borde teal (sigue la silueta) -->
+  <path
+    d="M450 95
+       C520 90 585 125 615 185
+       C655 210 690 275 700 360
+       C712 450 700 540 660 600
+       C620 670 545 715 460 725
+       C370 735 285 710 230 650
+       C165 590 135 500 140 410
+       C145 320 175 240 235 190
+       C290 125 370 100 450 95 Z"
+    fill="#050505"
+    stroke="#1A6B6B"
+    stroke-width="5"/>
+
+  <!-- Termo: solo contorno -->
+  <g fill="none" stroke="#1F7A7A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <!-- asa / tapa -->
+    <path d="M405 155 C405 135 495 135 495 155 L495 175 C495 188 405 188 405 175 Z"/>
+    <!-- cuello -->
+    <line x1="425" y1="188" x2="425" y2="220"/>
+    <line x1="475" y1="188" x2="475" y2="220"/>
+    <line x1="425" y1="220" x2="475" y2="220"/>
+    <!-- cuerpo -->
+    <path d="M390 220
+             C345 245 325 295 325 360
+             L325 545
+             C325 585 355 615 400 615
+             L500 615
+             C545 615 575 585 575 545
+             L575 360
+             C575 295 555 245 510 220
+             Z"/>
+  </g>
+
+  <!-- IVA tipografía serif dibujada a mano (como el bordado) -->
+  <g fill="#1F7A7A">
+    <!-- I -->
+    <path d="
+      M205 255
+      L285 255 L285 278 L255 278
+      L255 500 L285 500 L285 523
+      L205 523 L205 500 L235 500
+      L235 278 L205 278 Z"/>
+
+    <!-- V -->
+    <path d="
+      M295 255
+      L360 255 L360 278
+      L420 470
+      L470 300 L470 255
+      L535 255 L535 285
+      L455 523 L385 523
+      L295 285 Z"/>
+
+    <!-- A (más clara / turquesa) -->
+    <path fill="#2A9A9A" d="
+      M480 255
+      L555 255 L650 523 L575 523
+      L555 470 L505 470 L485 523 L410 523
+      Z
+      M515 410 L545 410 L530 365 Z"/>
+  </g>
+
+  <!-- Trazo de tinta: magenta izquierda → turquesa derecha -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path
+      d="M165 455
+         C185 510 245 545 320 530
+         C385 518 430 470 470 410
+         C505 360 545 315 605 310
+         C655 305 700 340 715 395
+         C728 440 715 490 680 520
+         C655 540 620 545 590 530"
+      stroke="url(#ink)"
+      stroke-width="38"/>
+
+    <!-- mechas / extremos deshilachados (derecha) -->
+    <path d="M590 520 C630 505 670 475 705 440" stroke="#A8EDEB" stroke-width="9"/>
+    <path d="M605 545 C650 530 690 500 725 460" stroke="#C8F5F2" stroke-width="6"/>
+    <path d="M575 555 C625 545 675 520 715 485" stroke="#5FD4D4" stroke-width="4.5"/>
+
+    <!-- mechas izquierda magenta -->
+    <path d="M165 455 C145 435 140 405 155 380" stroke="#E01E7A" stroke-width="11"/>
+    <path d="M175 480 C140 490 120 470 128 440" stroke="#9B0F4A" stroke-width="7"/>
+  </g>
+
+  <!-- CRAFTS en blanco, abajo a la derecha -->
+  <text
+    x="520" y="695"
+    font-family="Montserrat, Arial Black, Arial, sans-serif"
+    font-size="44"
+    font-weight="800"
+    letter-spacing="8"
+    fill="#FFFFFF"
+    text-anchor="middle">CRAFTS</text>
+</svg>

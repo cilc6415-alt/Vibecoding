@@ -1,12 +1,17 @@
-import Navbar from "@/components/layout/Navbar"
+import IvcaNavbar from "@/components/layout/IvcaNavbar"
 import Footer from "@/components/layout/Footer"
+import WhatsAppFloat from "@/components/layout/WhatsAppFloat"
+import { QuoteCartProvider } from "@/context/QuoteCartContext"
 
 export default function MarketingLayout({ children }) {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar />
-      <main className="flex-1">{children}</main>
-      <Footer />
-    </div>
+    <QuoteCartProvider>
+      <div className="flex min-h-screen flex-col">
+        <IvcaNavbar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+        <WhatsAppFloat />
+      </div>
+    </QuoteCartProvider>
   )
 }

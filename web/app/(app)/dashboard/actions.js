@@ -2,58 +2,31 @@
 
 import { revalidatePath } from "next/cache"
 import { createClient } from "@/lib/supabase/server"
+import { isOwnerEmail } from "@/lib/auth/owner"
 
-// CRUD de core_items vía Server Actions. La RLS de Supabase ya
-// garantiza que cada quien solo toca sus filas; aun así filtramos
-// por user_id como defensa en profundidad.
-
-async function requireUser() {
+async function requireOwner() {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  if (!user) throw new Error("No autenticado")
+  if (!user || !isOwnerEmail(user.email)) throw new Error("No autorizado")
   return { supabase, user }
 }
 
-export async function createItem(formData) {
-  const title = formData.get("title")?.toString().trim()
-  const description = formData.get("description")?.toString().trim() || null
-  if (!title) return
-
-  const { supabase, user } = await requireUser()
-  await supabase.from("core_items").insert({
-    user_id: user.id,
-    title,
-    description,
-  })
-  revalidatePath("/dashboard")
-}
-
-export async function toggleItem(formData) {
+export async function updateQuoteStatus(formData) {
   const id = formData.get("id")?.toString()
   const status = formData.get("status")?.toString()
-  if (!id) return
+  if (!id || !status) return
 
-  const next = status === "done" ? "active" : "done"
-  const { supabase, user } = await requireUser()
-  await supabase
-    .from("core_items")
-    .update({ status: next })
-    .eq("id", id)
-    .eq("user_id", user.id)
-  revalidatePath("/dashboard")
-}
+  const allowed = ["autorizada", "en_proceso", "terminada", "enviada"]
+  if (!allowed.includes(status)) return
 
-export async function deleteItem(formData) {
-  const id = formData.get("id")?.toString()
-  if (!id) return
+  const { supabase } = await requireOwner()
+  const patch = { status }
+  if (status === "autorizada") {
+    patch.authorized_at = new Date().toISOString()
+  }
 
-  const { supabase, user } = await requireUser()
-  await supabase
-    .from("core_items")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", user.id)
+  await supabase.from("quotes").update(patch).eq("id", id)
   revalidatePath("/dashboard")
 }

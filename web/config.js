@@ -40,7 +40,7 @@ const config = {
     primary: "#C94A8A",
     // Logo: puede ser texto o ruta a /public/logo.svg
     logoText: "IVCA Crafts",
-    logoSrc: null,
+    logoSrc: "/logo-ivca-mark.png",
     // Estilo del bordeado global (DaisyUI usa esto para botones, cards)
     radius: "1rem",
   },
@@ -49,16 +49,16 @@ const config = {
   // Toggles de features — encienden/apagan rutas y componentes
   // -----------------------------------------------------------
   features: {
-    waitlist: true, // Captura emails en landing — Sem 1
-    googleAuth: true, // Login con Google — Sem 2
-    emailLogin: false, // Magic link email — opcional
-    aiChat: true, // Chat AI en /chat — Sem 3
-    toolUse: true, // Tool use registry — Sem 4
-    agents: true, // LangGraph agents — Sem 5 (opcional-avanzado)
-    resend: true, // Email — Sem 1+
-    pricing: true, // Muestra la sección de precios en la landing (vitrina; el cobro real es `paypal`)
-    paypal: false, // Botón PayPal.me en Pricing (configura `payment` abajo)
-    adminPanel: true, // Panel /admin de leads (waitlist) — requiere ADMIN_PASSWORD en .env.local
+    waitlist: false,
+    googleAuth: true,
+    emailLogin: false,
+    aiChat: false,
+    toolUse: false,
+    agents: false,
+    resend: true,
+    pricing: false,
+    paypal: false,
+    adminPanel: true,
   },
 
   // -----------------------------------------------------------
@@ -100,7 +100,197 @@ const config = {
     loginUrl: "/login",
     afterLoginUrl: "/dashboard",
     afterLogoutUrl: "/",
-    providers: ["google"], // se sincroniza con features.googleAuth / emailLogin
+    ownerEmail: "cilc6415@gmail.com",
+    providers: ["google"],
+  },
+
+  // -----------------------------------------------------------
+  // IVCA Crafts — contacto, nav y cotizador
+  // -----------------------------------------------------------
+  ivca: {
+    whatsappNumero: "6144042429",
+    whatsappPrefijoPais: "52",
+    socialLinks: [
+      {
+        id: "facebook",
+        label: "Facebook",
+        href: "https://www.facebook.com/IVCA2021",
+      },
+      {
+        id: "instagram",
+        label: "Instagram",
+        href: "https://www.instagram.com/ivcacr2025/",
+      },
+    ],
+    navLeft: [
+      { label: "INICIO", href: "/#inicio" },
+      {
+        label: "TERMOS",
+        children: [
+          { label: "12 onzas", href: "/cotizar?categoria=termo&variante=12-onzas" },
+          { label: "20 onzas", href: "/cotizar?categoria=termo&variante=20-onzas" },
+          { label: "30 onzas", href: "/cotizar?categoria=termo&variante=30-onzas" },
+        ],
+      },
+      {
+        label: "FUNDAS",
+        children: [
+          { label: "iPhone", href: "/cotizar?categoria=funda&variante=iphone" },
+          { label: "Samsung", href: "/cotizar?categoria=funda&variante=samsung" },
+          { label: "Motorola", href: "/cotizar?categoria=funda&variante=motorola" },
+          { label: "Xiaomi", href: "/cotizar?categoria=funda&variante=xiaomi" },
+        ],
+      },
+      {
+        label: "LLAVEROS",
+        href: "/cotizar?categoria=llavero",
+      },
+      { label: "NOSOTROS", href: "/#nosotros" },
+    ],
+    navRight: [
+      { label: "COMO PEDIR", href: "/#como-pedir" },
+      { label: "ENVIOS", href: "/#envios" },
+    ],
+    muestrasTinta: [
+      { id: "tinta-1", label: "Color 1" },
+      { id: "tinta-2", label: "Color 2" },
+      { id: "tinta-3", label: "Color 3" },
+      { id: "tinta-4", label: "Color 4" },
+      { id: "tinta-5", label: "Color 5" },
+      { id: "tinta-6", label: "Color 6" },
+    ],
+    muestrasGeoda: [
+      { id: "geoda-1", label: "Geoda 1" },
+      { id: "geoda-2", label: "Geoda 2" },
+    ],
+    precios: {
+      termo: {
+        "12 onzas": { tinta_alcohol: 400, glitter: 480 },
+        "20 onzas": { tinta_alcohol: 480, glitter: 580 },
+        "30 onzas": { tinta_alcohol: 550, glitter: 650 },
+      },
+      funda: { tinta_alcohol: 400, glitter: 450 },
+      llavero: { tinta_alcohol: 100, glitter: 100 },
+    },
+    disenos: [
+      { value: "tinta_alcohol", label: "Tinta al Alcohol" },
+      { value: "glitter", label: "Glitter" },
+    ],
+    colores: [
+      { value: "color_tinta", label: "Color de tinta" },
+      { value: "2_colores_glitter", label: "2 Colores de glitter" },
+      { value: "glitter_geoda1", label: "Glitter Geoda 1" },
+      { value: "glitter_geoda2", label: "Glitter Geoda 2" },
+    ],
+    personalizaciones: [
+      { value: "nombre", label: "Nombre" },
+      { value: "inicial_nombre", label: "Inicial + Nombre" },
+      { value: "sin_personalizar", label: "Sin personalizar" },
+    ],
+    estatusCotizacion: [
+      { value: "borrador", label: "borrador" },
+      { value: "enviada", label: "enviada" },
+      { value: "autorizada", label: "autorizada" },
+      { value: "en_proceso", label: "en proceso" },
+      { value: "terminada", label: "terminada" },
+    ],
+    comoPedir: {
+      eyebrow: "Proceso",
+      title: "Cómo pedir tu pieza",
+      steps: [
+        {
+          number: "01",
+          title: "Elige tu producto",
+          body: "Termos de 12, 20 o 30 oz, fundas para celular o llaveros de resina.",
+        },
+        {
+          number: "02",
+          title: "Personalízalo",
+          body: "Colores, glitter y tu nombre o inicial — cada pieza es única.",
+        },
+        {
+          number: "03",
+          title: "Arma tu cotización",
+          body: "Configura cada producto en el sitio y revisa el resumen antes de enviar.",
+        },
+        {
+          number: "04",
+          title: "Confirma por WhatsApp",
+          body: "Ajustamos detalles, envío y forma de pago del anticipo.",
+        },
+        {
+          number: "05",
+          title: "Recíbelo",
+          body: "Tu pieza lista en 7 a 15 días hábiles.",
+        },
+      ],
+    },
+    envios: {
+      eyebrow: "Envíos",
+      title: "Entrega y tiempos",
+      paragraphs: [
+        "Entrega personal en la ciudad de Chihuahua, Chih. Hacemos envíos a toda la República Mexicana con costo adicional, que se calcula según tu ciudad y se confirma por WhatsApp antes de iniciar tu pieza.",
+        "Tiempo de elaboración: 7 a 15 días hábiles (la resina necesita su tiempo de curado).",
+      ],
+    },
+    nosotros: {
+      eyebrow: "01 · Sobre nosotros",
+      title: "El arte de la tinta que fluye",
+      paragraphs: [
+        "En IVCA Crafts pintamos cada termo y cada funda a mano con tinta al alcohol. La tinta se mueve libremente, así que ningún marmoleado se repite: tu pieza es literalmente irrepetible.",
+        "Cada trabajo se sella con resina epoxi, que le da ese brillo de cristal, protege el color y hace el acabado resistente al uso diario. Todo se elabora en nuestro taller en Chihuahua, Chih.",
+      ],
+      highlights: [
+        "100% pintado a mano",
+        "Acabado en resina epoxi",
+        "Personalización incluida",
+      ],
+    },
+    redes: {
+      eyebrow: "Comunidad",
+      title: "Síguenos en redes",
+      subtitle: "Mira trabajos recientes, procesos y novedades de IVCA Crafts.",
+    },
+    cotizar: {
+      title: "Cotizador",
+      subtitle:
+        "Elige tus piezas, personalízalas y envía tu pedido por WhatsApp. El envío se cotiza aparte y se confirma antes de iniciar.",
+      emptyCart: "Aún no agregas piezas. Configura tu primer producto a la izquierda.",
+      addToCart: "Agregar al carrito",
+      addAnother: "Agregar otro producto",
+      addAnotherQuestion: "¿Deseas agregar otro producto?",
+      addAnotherYes: "Sí",
+      addAnotherNo: "No",
+      finish: "Terminar cotización",
+      successTitle: "¡Cotización lista!",
+      successMessage:
+        "Tu cotización está lista y se envió a tu WhatsApp. Favor de verificar y autorizar en WhatsApp para continuar con el proceso.",
+      backHome: "Volver al inicio",
+      edit: "Editar",
+      remove: "Quitar",
+      totalLabel: "Tu cotización",
+      clientName: "Nombre",
+      clientPhone: "Celular (10 dígitos)",
+      quantity: "Cantidad",
+      design: "Diseño",
+      color: "Color",
+      personalization: "Personalizar",
+      personalizationText: "Texto (nombre o inicial + nombre)",
+      phoneModel: "Modelo del teléfono",
+      phoneModelPlaceholder: "Ej. iPhone 14 Pro, Galaxy S23",
+      subtotalLabel: "Subtotal",
+      errors: {
+        name: "Escribe tu nombre.",
+        phone: "El celular debe tener 10 dígitos.",
+        design: "Elige un diseño.",
+        color: "Elige una opción de color.",
+        personalization: "Elige cómo personalizar.",
+        personalizationText: "Escribe el nombre o inicial.",
+        phoneModel: "Escribe el modelo de tu teléfono.",
+        variant: "Elige la variante de tu producto.",
+        emptyCart: "Agrega al menos un producto al carrito.",
+      },
+    },
   },
 
   // -----------------------------------------------------------
@@ -114,12 +304,12 @@ const config = {
       { label: "Docs", href: "/docs" },
     ],
     hero: {
-      eyebrow: "Hecho a mano · Pieza única",
-      title: "Regalos personalizados que se sienten de verdad.",
+      eyebrow: "Chihuahua, México · Hecho a mano",
+      title: "Piezas únicas pintadas a mano, nunca dos iguales.",
       subtitle:
-        "Termos, fundas y llaveros pintados a mano para quienes buscan algo original, exclusivo y con historia.",
-      cta: { label: "Pide tu pieza", href: "#waitlist" },
-      ctaSecondary: { label: "Ver productos", href: "#features" },
+        "Termos, fundas para celular y llaveros de resina con tinta al alcohol y acabado en resina epoxi. Elaborados uno por uno en nuestro taller.",
+      cta: { label: "Cotizar mi pieza", href: "/cotizar" },
+      ctaSecondary: null,
     },
     clients: {
       title: "Creado para quienes buscan algo único",
@@ -153,24 +343,40 @@ const config = {
       ],
     },
     features: {
-      eyebrow: "Piezas a mano",
-      title: "Tres formas de regalar algo irrepetible.",
-      subtitle: "Cada diseño se pinta pieza por pieza: original, exclusivo y con tu historia.",
+      eyebrow: "Catálogo",
+      title: "Catálogo de diseños",
+      subtitle:
+        "Ejemplos de piezas realizadas. Tú eliges la paleta y nosotros creamos un diseño nuevo para ti.",
       items: [
-        {
-          icon: "Smartphone",
-          title: "Funda para celular",
-          body: "Un diseño pintado a mano, hecho solo para ti, que no se parece a nada de fábrica.",
-        },
         {
           icon: "Wine",
           title: "Termo Wine 12 oz",
-          body: "Mantén tu bebida lista y luce un termo personalizado con arte en cada trazo.",
+          body: "Compacto y elegante, ideal para café o té.",
+          href: "/cotizar?categoria=termo&variante=12-onzas",
+        },
+        {
+          icon: "Wine",
+          title: "Termo Skinny 20 oz",
+          body: "Delgado y práctico para el día a día.",
+          href: "/cotizar?categoria=termo&variante=20-onzas",
+        },
+        {
+          icon: "Wine",
+          title: "Termo 30 oz",
+          body: "Mayor capacidad para hidratarte con estilo.",
+          href: "/cotizar?categoria=termo&variante=30-onzas",
+        },
+        {
+          icon: "Smartphone",
+          title: "Funda para celular",
+          body: "Protege tu celular con arte pintado a mano.",
+          href: "/cotizar?categoria=funda&variante=iphone",
         },
         {
           icon: "KeyRound",
-          title: "Llaveros de resina",
-          body: "Un detalle único con formas, colores y acabados elaborados pieza por pieza.",
+          title: "Llavero de resina",
+          body: "Un detalle único con tinta al alcohol o glitter.",
+          href: "/cotizar?categoria=llavero",
         },
       ],
     },
@@ -200,9 +406,9 @@ const config = {
       eyebrow: "Tu pieza",
       title: "Regala algo que no se encuentra en serie.",
       subtitle:
-        "Cuéntanos a quién va dirigido y qué te imaginas: lo pintamos a mano para que se sienta único.",
-      cta: { label: "Pide tu pieza", href: "#waitlist" },
-      ctaSecondary: { label: "Ver productos", href: "#features" },
+        "Cuéntanos qué imaginas: lo pintamos a mano para que se sienta único.",
+      cta: { label: "Cotizar ahora", href: "/cotizar" },
+      ctaSecondary: { label: "Cómo pedir", href: "/#como-pedir" },
     },
     waitlist: {
       eyebrow: "Haz tu pedido",
@@ -214,36 +420,34 @@ const config = {
     },
     footer: {
       tagline:
-        "IVCA Crafts · termos, fundas y llaveros pintados a mano, con amor.",
+        "IVCA Crafts · termos, fundas y llaveros pintados a mano en Chihuahua, Chih.",
       columns: [
         {
           title: "Producto",
           links: [
-            { label: "Características", href: "#features" },
-            { label: "Precios", href: "#pricing" },
-            { label: "Preguntas", href: "#faq" },
+            { label: "Cotizar", href: "/cotizar" },
+            { label: "Cómo pedir", href: "/#como-pedir" },
           ],
         },
         {
-          title: "Recursos",
+          title: "Información",
           links: [
-            { label: "Docs", href: "/docs" },
-            { label: "Quick start", href: "/docs/setup/quick-start" },
-            { label: "Troubleshooting", href: "/docs/troubleshooting/errores-comunes" },
+            { label: "Nosotros", href: "/#nosotros" },
+            { label: "Envíos", href: "/#envios" },
           ],
         },
         {
-          title: "Comunidad",
+          title: "Contacto",
           links: [
-            { label: "GitHub", href: "https://github.com/RoniHY/Vibecoding", external: true },
-            { label: "Change and Code", href: "https://changeandcode.com", external: true },
+            { label: "WhatsApp", href: "whatsapp", external: true },
+            { label: "Facebook", href: "https://www.facebook.com/IVCA2021", external: true },
+            { label: "Instagram", href: "https://www.instagram.com/ivcacr2025/", external: true },
           ],
         },
       ],
-      // Compat: links planos usados en el bar inferior
       links: [
-        { label: "Docs", href: "/docs" },
-        { label: "GitHub", href: "https://github.com/RoniHY/Vibecoding", external: true },
+        { label: "Cotizar", href: "/cotizar" },
+        { label: "WhatsApp", href: "whatsapp", external: true },
       ],
     },
   },

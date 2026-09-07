@@ -1,30 +1,28 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { LayoutDashboard, MessageSquare, Bot } from "lucide-react"
+import { ClipboardList } from "lucide-react"
 import config from "@/config"
 import { getUser } from "@/lib/supabase/server"
+import { isOwnerEmail } from "@/lib/auth/owner"
 import UserMenu from "@/components/auth/UserMenu"
 import Logo from "@/components/Logo"
 
 const NAV = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/chat", label: "Chat", icon: MessageSquare },
-  { href: "/agent", label: "Agente", icon: Bot },
+  { href: "/dashboard", label: "Cotizaciones", icon: ClipboardList },
 ]
 
-// Layout de la zona privada. El middleware ya bloquea sin sesión,
-// pero revalidamos aquí para tener el `user` y proteger por si acaso.
 export default async function AppLayout({ children }) {
   const user = await getUser()
   if (!user) redirect(config.auth.loginUrl)
+  if (!isOwnerEmail(user.email)) redirect("/?error=unauthorized")
 
   return (
     <div className="flex min-h-screen flex-col bg-base-200">
       <header className="sticky top-0 z-40 border-b border-base-200 bg-base-100">
         <div className="flex items-center justify-between px-4 py-3">
-          <Link href="/dashboard" className="flex items-center gap-2 font-bold">
-            <Logo className="size-7" />
-            {config.brand.logoText}
+          <Link href="/dashboard" className="flex items-center gap-3 font-semibold text-primary">
+            <Logo className="h-[1.25rem]" />
+            {config.brand.logoText.toUpperCase()}
           </Link>
           <UserMenu user={user} />
         </div>

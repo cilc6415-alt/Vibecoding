@@ -1,13 +1,17 @@
 import Link from "next/link"
 import config from "@/config"
 import Logo from "@/components/Logo"
+import { urlWhatsappGeneral } from "@/lib/quotes"
 
 function FooterLink({ link, className }) {
+  const href = link.href === "whatsapp" ? urlWhatsappGeneral() : link.href
+  const external = link.external || link.href === "whatsapp"
+
   return (
     <Link
-      href={link.href}
-      target={link.external ? "_blank" : undefined}
-      rel={link.external ? "noopener noreferrer" : undefined}
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
       className={className}
     >
       {link.label}
@@ -23,9 +27,11 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid gap-10 md:grid-cols-[1.5fr_repeat(3,1fr)]">
           <div>
-            <div className="flex items-center gap-2">
-              <Logo className="size-6" />
-              <span className="text-lg font-bold">{config.brand.logoText}</span>
+            <div className="flex items-center gap-2.5">
+              <Logo className="h-[1.125rem]" />
+              <span className="font-serif text-lg font-semibold tracking-wide text-primary leading-none">
+                {config.brand.logoText.toUpperCase()}
+              </span>
             </div>
             <p className="mt-3 max-w-xs text-sm text-base-content/60">{tagline}</p>
           </div>
@@ -47,11 +53,8 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-base-200 pt-6 text-sm text-base-content/50 md:flex-row md:items-center md:justify-between">
-          <span>
-            © {new Date().getFullYear()} {config.brand.logoText}
-          </span>
-          <span>Hecho por Pedro Gutiérrez (Roni) · Curso Vibe Code con Change and Code</span>
+        <div className="mt-10 border-t border-base-200 pt-6 text-sm text-base-content/50">
+          © {new Date().getFullYear()} {config.brand.logoText} · Chihuahua, México
         </div>
       </div>
     </footer>

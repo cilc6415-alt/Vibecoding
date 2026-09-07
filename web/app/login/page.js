@@ -19,14 +19,14 @@ export default async function LoginPage({ searchParams }) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-base-200 px-4">
       <div className="w-full max-w-sm rounded-2xl border border-base-200 bg-base-100 p-8 shadow-sm">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold">
-          <Logo className="size-7" />
-          {config.brand.logoText}
+        <Link href="/" className="flex items-center gap-3 text-lg font-bold text-primary">
+          <Logo className="h-[1.25rem]" />
+          {config.brand.logoText.toUpperCase()}
         </Link>
 
-        <h1 className="mt-6 text-2xl font-bold tracking-tight">Entra a tu cuenta</h1>
+        <h1 className="mt-6 text-2xl font-bold tracking-tight">Panel IVCA Crafts</h1>
         <p className="mt-2 text-sm text-base-content/70">
-          Usa tu cuenta de Google para empezar.
+          Acceso exclusivo para administrar cotizaciones.
         </p>
 
         {hasError && (
@@ -50,7 +50,7 @@ export default async function LoginPage({ searchParams }) {
         </div>
 
         <p className="mt-6 text-center text-xs text-base-content/50">
-          Al continuar aceptas los términos del curso Vibecoding.
+          Solo el correo autorizado del negocio puede entrar.
         </p>
       </div>
     </main>

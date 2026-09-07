@@ -14,6 +14,7 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse } from "next/server"
 import config from "@/config"
+import { isOwnerEmail } from "@/lib/auth/owner"
 
 // Rutas que requieren sesión. Todo lo que cuelga de /(app) en realidad,
 // pero el middleware no ve grupos de rutas, así que listamos prefijos.
@@ -64,6 +65,13 @@ export async function updateSession(request) {
       loginUrl.pathname = config.auth.loginUrl
       loginUrl.searchParams.set("next", pathname)
       return NextResponse.redirect(loginUrl)
+    }
+
+    if (pathname.startsWith("/dashboard") && user && !isOwnerEmail(user.email)) {
+      const homeUrl = request.nextUrl.clone()
+      homeUrl.pathname = "/"
+      homeUrl.searchParams.set("error", "unauthorized")
+      return NextResponse.redirect(homeUrl)
     }
 
     // Si ya hay sesión y va a /login, mándalo al dashboard.

@@ -1,13 +1,10 @@
 import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
 import Hero from "@/components/landing/Hero"
-import ClientLogos from "@/components/landing/ClientLogos"
-import Problem from "@/components/landing/Problem"
-import Features from "@/components/landing/Features"
-import Pricing from "@/components/landing/Pricing"
-import FAQ from "@/components/landing/FAQ"
 import FinalCta from "@/components/landing/FinalCta"
-import Waitlist from "@/components/landing/Waitlist"
-import config from "@/config"
+import Nosotros from "@/components/landing/Nosotros"
+import ComoPedir from "@/components/landing/ComoPedir"
+import Envios from "@/components/landing/Envios"
 
 export default async function HomePage({ searchParams }) {
   const params = await searchParams
@@ -18,16 +15,26 @@ export default async function HomePage({ searchParams }) {
     redirect(`/auth/callback?${callback.toString()}`)
   }
 
+  let galleryImages = []
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from("gallery_images")
+      .select("*")
+      .eq("active", true)
+      .order("sort_order")
+    galleryImages = data ?? []
+  } catch {
+    galleryImages = []
+  }
+
   return (
     <>
       <Hero />
-      <ClientLogos />
-      <Problem />
-      <Features />
-      {config.features.pricing && <Pricing />}
-      <FAQ />
-      <FinalCta />
-      {config.features.waitlist && <Waitlist />}
+      <FinalCta showActions={false} />
+      <Nosotros images={galleryImages} />
+      <ComoPedir />
+      <Envios />
     </>
   )
 }
