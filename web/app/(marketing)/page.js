@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
 import Hero from "@/components/landing/Hero"
 import FinalCta from "@/components/landing/FinalCta"
 import Nosotros from "@/components/landing/Nosotros"
@@ -15,24 +14,11 @@ export default async function HomePage({ searchParams }) {
     redirect(`/auth/callback?${callback.toString()}`)
   }
 
-  let galleryImages = []
-  try {
-    const supabase = await createClient()
-    const { data } = await supabase
-      .from("gallery_images")
-      .select("*")
-      .eq("active", true)
-      .order("sort_order")
-    galleryImages = data ?? []
-  } catch {
-    galleryImages = []
-  }
-
   return (
     <>
       <Hero />
-      <FinalCta showActions={false} />
-      <Nosotros images={galleryImages} />
+      <Nosotros />
+      <FinalCta showActions={false} align="left" />
       <ComoPedir />
       <Envios />
     </>

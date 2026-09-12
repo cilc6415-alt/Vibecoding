@@ -2,7 +2,7 @@ import Link from "next/link"
 import config from "@/config"
 
 export default function ComoPedir() {
-  const { eyebrow, title, steps } = config.ivca.comoPedir
+  const { eyebrow, title, steps, closingTitle, closingCta } = config.ivca.comoPedir
 
   return (
     <section id="como-pedir" className="border-t border-base-200 bg-base-100 py-20 md:py-28">
@@ -21,7 +21,7 @@ export default function ComoPedir() {
               className="flex min-h-48 flex-col justify-between bg-[#F5F0E8] p-8"
             >
               <div>
-                <p className="font-serif text-4xl text-[#C9A227]">{step.number}</p>
+                <p className="font-serif text-4xl text-primary">{step.number}</p>
                 <h3 className="mt-4 font-serif text-2xl font-semibold text-[#3D2E28]">
                   {step.title}
                 </h3>
@@ -29,12 +29,15 @@ export default function ComoPedir() {
               </div>
             </article>
           ))}
-          <article className="flex min-h-48 flex-col items-start justify-between bg-[#D4C4B8] p-8 sm:col-span-2 lg:col-span-1">
+          <article className="flex min-h-48 flex-col items-center justify-center gap-6 bg-[#F5F0E8] p-8 text-center sm:col-span-2 lg:col-span-1">
             <p className="font-serif text-xl font-semibold text-[#3D2E28]">
-              Listo para armar tu pedido
+              {closingTitle}
             </p>
-            <Link href="/#inicio" className="btn btn-neutral btn-sm">
-              Regresar al inicio
+            <Link
+              href={closingCta.href}
+              className="btn btn-primary px-6 shadow-md"
+            >
+              {closingCta.label}
             </Link>
           </article>
         </div>

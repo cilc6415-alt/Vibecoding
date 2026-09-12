@@ -24,6 +24,24 @@ export function etiquetaColor(value) {
   return copy.colores.find((c) => c.value === value)?.label ?? value
 }
 
+/** Texto de color para carrito y WhatsApp (ej. "Color Blanco y Rosa"). */
+export function lineaColorItem(item) {
+  if (!item) return null
+  if (item.designType === "tinta_alcohol" && item.colorDetail) {
+    return `Color ${item.colorDetail}`
+  }
+  if (item.colorOption?.startsWith?.("glitter_geoda") && item.colorDetail) {
+    return `Color ${item.colorDetail}`
+  }
+  if (item.colorOption === "2_colores_glitter" && item.colorDetail) {
+    return `Color ${item.colorDetail}`
+  }
+  if (!item.colorOption) return null
+  return `Color: ${etiquetaColor(item.colorOption)}${
+    item.colorDetail ? ` — ${item.colorDetail}` : ""
+  }`
+}
+
 export function etiquetaPersonalizacion(value) {
   return copy.personalizaciones.find((p) => p.value === value)?.label ?? value
 }
@@ -91,7 +109,7 @@ export function armarMensajeWhatsappCliente({ clientName, items }) {
       `${index + 1}. ${item.productName}${item.variantLabel ? ` (${item.variantLabel})` : ""}`,
       item.phoneModel ? `   Modelo: ${item.phoneModel}` : null,
       `   Diseño: ${etiquetaDiseno(item.designType)}`,
-      `   Color: ${etiquetaColor(item.colorOption)}${item.colorDetail ? ` — ${item.colorDetail}` : ""}`,
+      lineaColorItem(item) ? `   ${lineaColorItem(item)}` : null,
       `   Personalización: ${etiquetaPersonalizacion(item.personalizationType)}${item.personalizationText ? ` — ${item.personalizationText}` : ""}`,
       `   Cantidad: ${item.quantity}`,
       item.unitPrice != null ? `   Subtotal: ${formatearPrecio(subtotal)}` : null,
@@ -124,7 +142,7 @@ export function armarMensajeWhatsapp({ clientName, clientPhone, items }) {
       `${index + 1}. ${item.productName}${item.variantLabel ? ` (${item.variantLabel})` : ""}`,
       item.phoneModel ? `   Modelo: ${item.phoneModel}` : null,
       `   Diseño: ${etiquetaDiseno(item.designType)}`,
-      `   Color: ${etiquetaColor(item.colorOption)}${item.colorDetail ? ` — ${item.colorDetail}` : ""}`,
+      lineaColorItem(item) ? `   ${lineaColorItem(item)}` : null,
       `   Personalización: ${etiquetaPersonalizacion(item.personalizationType)}${item.personalizationText ? ` — ${item.personalizationText}` : ""}`,
       `   Cantidad: ${item.quantity}`,
       item.unitPrice != null

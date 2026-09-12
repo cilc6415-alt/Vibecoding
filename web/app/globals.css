@@ -64,9 +64,163 @@ body {
   height: 100%;
 }
 
+/* Compensa el menú sticky al navegar a anclas (#inicio, #nosotros, etc.) */
+html {
+  scroll-padding-top: 5.5rem;
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 8.5rem;
+  }
+}
+
 body {
   font-family: var(--font-dm-sans, ui-sans-serif, system-ui, sans-serif);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Efecto levantar en nombres de producto (galería Nosotros) */
+.ivca-caption-lift {
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease;
+  will-change: transform;
+}
+
+.ivca-caption-lift:hover,
+.group:hover .ivca-caption-lift {
+  transform: translateY(-8px);
+  box-shadow:
+    0 12px 24px -8px rgba(61, 46, 40, 0.28),
+    0 4px 8px -4px rgba(61, 46, 40, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ivca-caption-lift,
+  .ivca-caption-lift:hover,
+  .group:hover .ivca-caption-lift {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Botón Terminar cotización — brillo tipo cápsula */
+.btn-cotizar-brillo {
+  position: relative;
+  display: inline-flex;
+  width: 100%;
+  min-height: 3.25rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 0;
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    #f08bb8 0%,
+    #c94a8a 42%,
+    #a8326e 100%
+  );
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -2px 4px rgba(120, 30, 70, 0.35),
+    0 0 0 1px rgba(201, 74, 138, 0.35),
+    0 10px 28px rgba(201, 74, 138, 0.45);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.btn-cotizar-brillo::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 10%;
+  right: 10%;
+  height: 42%;
+  border-radius: 9999px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.75) 0%,
+    rgba(255, 255, 255, 0.15) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.btn-cotizar-brillo::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 14%;
+  width: 28%;
+  height: 28%;
+  border-radius: 9999px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    transparent 65%
+  );
+  filter: blur(0.5px);
+  pointer-events: none;
+}
+
+.btn-cotizar-brillo:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(120, 30, 70, 0.35),
+    0 0 0 1px rgba(201, 74, 138, 0.4),
+    0 14px 36px rgba(201, 74, 138, 0.55);
+}
+
+.btn-cotizar-brillo:active:not(:disabled) {
+  transform: translateY(1px);
+  filter: brightness(0.98);
+}
+
+.btn-cotizar-brillo:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+  filter: grayscale(0.2);
+}
+
+.btn-cotizar-brillo--pulse {
+  animation: cotizar-brillo-pulse 1.7s ease-in-out infinite;
+}
+
+@keyframes cotizar-brillo-pulse {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      inset 0 -2px 4px rgba(120, 30, 70, 0.35),
+      0 0 0 1px rgba(201, 74, 138, 0.35),
+      0 10px 28px rgba(201, 74, 138, 0.45);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      inset 0 -2px 4px rgba(120, 30, 70, 0.35),
+      0 0 0 3px rgba(240, 139, 184, 0.45),
+      0 14px 40px rgba(201, 74, 138, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-cotizar-brillo--pulse {
+    animation: none;
+  }
 }
 
 /* Tipografía de display: headings con Space Grotesk */

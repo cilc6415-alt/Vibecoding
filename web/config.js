@@ -152,16 +152,53 @@ const config = {
       { label: "ENVIOS", href: "/#envios" },
     ],
     muestrasTinta: [
-      { id: "tinta-1", label: "Color 1" },
-      { id: "tinta-2", label: "Color 2" },
-      { id: "tinta-3", label: "Color 3" },
-      { id: "tinta-4", label: "Color 4" },
-      { id: "tinta-5", label: "Color 5" },
-      { id: "tinta-6", label: "Color 6" },
+      { id: "tinta-azul", label: "Azul", imageSrc: "/colores/tinta-azul.jpg" },
+      {
+        id: "tinta-amarillo",
+        label: "Amarilla",
+        imageSrc: "/colores/tinta-amarillo.jpg",
+      },
+      { id: "tinta-negra", label: "Negra", imageSrc: "/colores/tinta-negra.jpg" },
+      {
+        id: "tinta-magenta",
+        label: "Magenta",
+        imageSrc: "/colores/tinta-magenta.jpg",
+      },
+      {
+        id: "tinta-naranja",
+        label: "Naranja",
+        imageSrc: "/colores/tinta-naranja.jpg",
+      },
+      {
+        id: "tinta-morada",
+        label: "Morada",
+        imageSrc: "/colores/tinta-morada.jpg",
+      },
+      { id: "tinta-verde", label: "Verde", imageSrc: "/colores/tinta-verde.jpg" },
     ],
     muestrasGeoda: [
-      { id: "geoda-1", label: "Geoda 1" },
-      { id: "geoda-2", label: "Geoda 2" },
+      {
+        id: "geoda-1",
+        label: "Geoda 1",
+        value: "glitter_geoda1",
+        imageSrc: "/colores/glitter-geoda1.jpg",
+      },
+      {
+        id: "geoda-2",
+        label: "Geoda 2",
+        value: "glitter_geoda2",
+        imageSrc: "/colores/glitter-geoda2.jpg",
+      },
+    ],
+    glitterCombinadoBase: "Blanco",
+    glitterCombinadoColores: [
+      { id: "rosa", label: "Rosa", hex: "#E85A8C" },
+      { id: "rojo", label: "Rojo", hex: "#C62828" },
+      { id: "azul", label: "Azul", hex: "#1565C0" },
+      { id: "verde", label: "Verde", hex: "#2E7D32" },
+      { id: "negro", label: "Negro", hex: "#212121" },
+      { id: "morado", label: "Morado", hex: "#6A1B9A" },
+      { id: "amarillo", label: "Amarillo", hex: "#F9A825" },
     ],
     precios: {
       termo: {
@@ -178,12 +215,13 @@ const config = {
     ],
     colores: [
       { value: "color_tinta", label: "Color de tinta" },
-      { value: "2_colores_glitter", label: "2 Colores de glitter" },
+      { value: "2_colores_glitter", label: "Glitter combinado: Blanco" },
       { value: "glitter_geoda1", label: "Glitter Geoda 1" },
       { value: "glitter_geoda2", label: "Glitter Geoda 2" },
     ],
     personalizaciones: [
       { value: "nombre", label: "Nombre" },
+      { value: "inicial", label: "Inicial" },
       { value: "inicial_nombre", label: "Inicial + Nombre" },
       { value: "sin_personalizar", label: "Sin personalizar" },
     ],
@@ -224,6 +262,8 @@ const config = {
           body: "Tu pieza lista en 7 a 15 días hábiles.",
         },
       ],
+      closingTitle: "¿Listo para armar tu pedido?",
+      closingCta: { label: "Regresar al inicio", href: "/#inicio" },
     },
     envios: {
       eyebrow: "Envíos",
@@ -234,8 +274,8 @@ const config = {
       ],
     },
     nosotros: {
-      eyebrow: "01 · Sobre nosotros",
-      title: "El arte de la tinta que fluye",
+      eyebrow: "Sobre nosotros",
+      title: "Piezas únicas pintadas a mano, nunca dos iguales",
       paragraphs: [
         "En IVCA Crafts pintamos cada termo y cada funda a mano con tinta al alcohol. La tinta se mueve libremente, así que ningún marmoleado se repite: tu pieza es literalmente irrepetible.",
         "Cada trabajo se sella con resina epoxi, que le da ese brillo de cristal, protege el color y hace el acabado resistente al uso diario. Todo se elabora en nuestro taller en Chihuahua, Chih.",
@@ -256,11 +296,18 @@ const config = {
       subtitle:
         "Elige tus piezas, personalízalas y envía tu pedido por WhatsApp. El envío se cotiza aparte y se confirma antes de iniciar.",
       emptyCart: "Aún no agregas piezas. Configura tu primer producto a la izquierda.",
+      cartMenuTitle: "Cotizar",
+      cartMenuSubtitle: "Elige qué cotizar",
+      cartMenuAria: "Abrir menú de productos para cotizar",
+      cartMenuExpand: "Ver opciones",
+      cartMenuDirect: "Ir al cotizador",
       addToCart: "Agregar al carrito",
       addAnother: "Agregar otro producto",
       addAnotherQuestion: "¿Deseas agregar otro producto?",
       addAnotherYes: "Sí",
       addAnotherNo: "No",
+      addAnotherNoHint:
+        "Revisa tu cotización a la derecha (o abajo en móvil) y pulsa Terminar cotización.",
       finish: "Terminar cotización",
       successTitle: "¡Cotización lista!",
       successMessage:
@@ -275,7 +322,11 @@ const config = {
       design: "Diseño",
       color: "Color",
       personalization: "Personalizar",
-      personalizationText: "Texto (nombre o inicial + nombre)",
+      personalizationText: "Texto de personalización",
+      personalizationNombre: "Nombre",
+      personalizationNombrePlaceholder: "Escribe el nombre",
+      personalizationInicial: "Inicial",
+      personalizationInicialPlaceholder: "Ej. A",
       phoneModel: "Modelo del teléfono",
       phoneModelPlaceholder: "Ej. iPhone 14 Pro, Galaxy S23",
       subtotalLabel: "Subtotal",
@@ -284,8 +335,11 @@ const config = {
         phone: "El celular debe tener 10 dígitos.",
         design: "Elige un diseño.",
         color: "Elige una opción de color.",
+        inkColor: "Elige el color de la tinta.",
         personalization: "Elige cómo personalizar.",
-        personalizationText: "Escribe el nombre o inicial.",
+        personalizationText: "Completa el texto de personalización.",
+        personalizationNombre: "Escribe el nombre.",
+        personalizationInicial: "Escribe la inicial.",
         phoneModel: "Escribe el modelo de tu teléfono.",
         variant: "Elige la variante de tu producto.",
         emptyCart: "Agrega al menos un producto al carrito.",
@@ -304,12 +358,13 @@ const config = {
       { label: "Docs", href: "/docs" },
     ],
     hero: {
-      eyebrow: "Chihuahua, México · Hecho a mano",
-      title: "Piezas únicas pintadas a mano, nunca dos iguales.",
-      subtitle:
-        "Termos, fundas para celular y llaveros de resina con tinta al alcohol y acabado en resina epoxi. Elaborados uno por uno en nuestro taller.",
+      eyebrow: null,
+      title: "Regalos personalizados que se sienten de verdad",
+      subtitle: null,
       cta: { label: "Cotizar mi pieza", href: "/cotizar" },
       ctaSecondary: null,
+      videoSrc:
+        "/Ginger Sunny Just Living Photo Collage Facebook Cover.mp4",
     },
     clients: {
       title: "Creado para quienes buscan algo único",
@@ -403,12 +458,29 @@ const config = {
       ],
     },
     finalCta: {
-      eyebrow: "Tu pieza",
-      title: "Regala algo que no se encuentra en serie.",
+      eyebrow: "Catálogo",
+      title: "Catálogo de diseños",
       subtitle:
-        "Cuéntanos qué imaginas: lo pintamos a mano para que se sienta único.",
+        "Desliza a la derecha o izquierda para ver cada hoja de trabajos.",
       cta: { label: "Cotizar ahora", href: "/cotizar" },
       ctaSecondary: { label: "Cómo pedir", href: "/#como-pedir" },
+      sheets: [
+        {
+          id: "hoja-1",
+          label: "Fundas para celular",
+          imageSrc: "/galeria/catalogo/hoja-1.png",
+        },
+        {
+          id: "hoja-2",
+          label: "Termo Wine 12 oz",
+          imageSrc: "/galeria/catalogo/hoja-2.png",
+        },
+        {
+          id: "hoja-3",
+          label: "Más diseños",
+          imageSrc: "/galeria/catalogo/hoja-3.png",
+        },
+      ],
     },
     waitlist: {
       eyebrow: "Haz tu pedido",

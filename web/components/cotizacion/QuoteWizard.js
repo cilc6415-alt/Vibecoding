@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState, useEffect } from "react"
+import { useMemo, useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import config from "@/config"
@@ -55,8 +55,8 @@ function estilosImagenCotizador(product, variant) {
 
   if (product?.category === "llavero") {
     return {
-      contenedor: "relative min-h-[300px] flex-1",
-      imagen: "object-contain object-center p-10 drop-shadow-md",
+      contenedor: "relative min-h-[340px] flex-1",
+      imagen: "object-contain object-center p-2 drop-shadow-md",
       fill: true,
     }
   }
@@ -75,6 +75,7 @@ export default function QuoteWizard({
   initialVariant,
   initialDesignType,
   lockedProduct = false,
+  lockedVariant = false,
 }) {
   const copy = config.ivca.cotizar
   const {
@@ -90,16 +91,25 @@ export default function QuoteWizard({
   const [product, setProduct] = useState(initialProduct)
   const [variant, setVariant] = useState(initialVariant)
   const [designType, setDesignType] = useState(initialDesignType || "")
-  const [colorOption, setColorOption] = useState("")
+  const [colorOption, setColorOption] = useState(
+    initialDesignType === "tinta_alcohol" ? "color_tinta" : ""
+  )
   const [colorDetail, setColorDetail] = useState("")
   const [personalizationType, setPersonalizationType] = useState("")
-  const [personalizationText, setPersonalizationText] = useState("")
+  const [personalizationNombre, setPersonalizationNombre] = useState("")
+  const [personalizationInicial, setPersonalizationInicial] = useState("")
   const [phoneModel, setPhoneModel] = useState("")
   const [quantity, setQuantity] = useState(1)
   const [error, setError] = useState("")
   const [finishing, setFinishing] = useState(false)
   const [finished, setFinished] = useState(false)
   const [wantsAnother, setWantsAnother] = useState(null)
+  const cartPanelRef = useRef(null)
+
+  useEffect(() => {
+    if (wantsAnother !== "no" || !items.length) return
+    cartPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }, [wantsAnother, items.length])
 
   const imagenEstilos = estilosImagenCotizador(product, variant)
 
@@ -139,7 +149,8 @@ export default function QuoteWizard({
     setColorOption("")
     setColorDetail("")
     setPersonalizationType("")
-    setPersonalizationText("")
+    setPersonalizationNombre("")
+    setPersonalizationInicial("")
     setPhoneModel("")
     setQuantity(1)
     setError("")
@@ -153,17 +164,47 @@ export default function QuoteWizard({
     if (product.category === "funda" && !phoneModel.trim()) return copy.errors.phoneModel
     if (!designType) return copy.errors.design
     if (!colorOption) return copy.errors.color
+    if (
+      designType === "tinta_alcohol" &&
+      colorOption === "color_tinta" &&
+      !colorDetail.trim()
+    ) {
+      return copy.errors.inkColor
+    }
     if (colorOption === "2_colores_glitter" && !colorDetail.trim()) {
-      return "Escribe los 2 colores de glitter."
+      return "Elige el color a combinar con blanco."
     }
     if (!personalizationType) return copy.errors.personalization
-    if (
-      personalizationType !== "sin_personalizar" &&
-      !personalizationText.trim()
-    ) {
-      return copy.errors.personalizationText
+    if (personalizationType === "nombre" && !personalizationNombre.trim()) {
+      return copy.errors.personalizationNombre
+    }
+    if (personalizationType === "inicial" && !personalizationInicial.trim()) {
+      return copy.errors.personalizationInicial
+    }
+    if (personalizationType === "inicial_nombre") {
+      if (!personalizationInicial.trim()) return copy.errors.personalizationInicial
+      if (!personalizationNombre.trim()) return copy.errors.personalizationNombre
     }
     return null
+  }
+
+  function textoPersonalizacion() {
+    if (personalizationType === "nombre") return personalizationNombre.trim()
+    if (personalizationType === "inicial") {
+      return personalizationInicial.trim().slice(0, 3).toUpperCase()
+    }
+    if (personalizationType === "inicial_nombre") {
+      const inicial = personalizationInicial.trim().slice(0, 3).toUpperCase()
+      const nombre = personalizationNombre.trim()
+      return `${inicial} · ${nombre}`
+    }
+    return null
+  }
+
+  function handlePersonalizationTypeChange(value) {
+    setPersonalizationType(value)
+    setPersonalizationNombre("")
+    setPersonalizationInicial("")
   }
 
   function handleAddToCart() {
@@ -185,7 +226,7 @@ export default function QuoteWizard({
       colorOption,
       colorDetail: colorDetail.trim() || null,
       personalizationType,
-      personalizationText: personalizationText.trim() || null,
+      personalizationText: textoPersonalizacion(),
       quantity,
       unitPrice,
     })
@@ -234,10 +275,17 @@ export default function QuoteWizard({
       clientPhone: phone,
       items: cartItems,
     })
-    const popup = window.open(waUrl, "_blank", "noopener,noreferrer")
-    if (!popup) {
-      window.location.href = waUrl
-    }
+
+    // Abrir WhatsApp en pestaña nueva sin abandonar el cotizador.
+    // (window.open con noopener devolvía null y el fallback location.href
+    // sacaba al usuario de la página.)
+    const anchor = document.createElement("a")
+    anchor.href = waUrl
+    anchor.target = "_blank"
+    anchor.rel = "noopener noreferrer"
+    document.body.appendChild(anchor)
+    anchor.click()
+    anchor.remove()
 
     clearCart()
     setWantsAnother(null)
@@ -261,7 +309,7 @@ export default function QuoteWizard({
     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
       <div className="space-y-6 rounded-2xl border border-base-200 bg-base-100 p-6">
         <div>
-          <p className="text-sm uppercase tracking-widest text-primary">03 · Arma tu pedido</p>
+          <p className="text-sm uppercase tracking-widest text-primary">Arma tu pedido</p>
           <h1 className="mt-2 font-serif text-3xl font-semibold text-[#3D2E28]">
             {copy.title}
           </h1>
@@ -300,14 +348,6 @@ export default function QuoteWizard({
                     {product.name}
                     {variant ? ` · ${variant.variant_label}` : ""}
                   </p>
-                  {unitPrice != null && (
-                    <p className="mt-1 text-lg font-semibold text-primary">
-                      {formatearPrecio(unitPrice)}
-                      {quantity > 1
-                        ? ` × ${quantity} = ${formatearPrecio(unitPrice * quantity)}`
-                        : ""}
-                    </p>
-                  )}
                 </div>
               </div>
 
@@ -377,7 +417,7 @@ export default function QuoteWizard({
               ))}
             </div>
           )}
-          {productVariants.length > 0 && (
+          {productVariants.length > 0 && !lockedVariant && (
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {productVariants.map((v) => (
                 <button
@@ -415,15 +455,7 @@ export default function QuoteWizard({
             2. Diseño
           </legend>
           <div className="grid gap-2 sm:grid-cols-2">
-            {config.ivca.disenos.map((d) => {
-              const precio =
-                product &&
-                calcularPrecioUnitario({
-                  category: product.category,
-                  variantLabel: variant?.variant_label || "",
-                  designType: d.value,
-                })
-              return (
+            {config.ivca.disenos.map((d) => (
               <label
                 key={d.value}
                 className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
@@ -437,95 +469,234 @@ export default function QuoteWizard({
                   checked={designType === d.value}
                   onChange={() => {
                     setDesignType(d.value)
-                    setColorOption("")
                     setColorDetail("")
+                    if (d.value === "tinta_alcohol") {
+                      setColorOption("color_tinta")
+                    } else if (
+                      d.value === "glitter" &&
+                      product?.category !== "termo"
+                    ) {
+                      setColorOption("2_colores_glitter")
+                    } else {
+                      setColorOption("")
+                    }
                   }}
                 />
-                <span className="flex-1">{d.label}</span>
-                {precio != null && (
-                  <span className="font-semibold text-primary">{formatearPrecio(precio)}</span>
-                )}
+                <span>{d.label}</span>
               </label>
-            )})}
+            ))}
           </div>
         </fieldset>
 
-        {designType && (
+        {designType === "tinta_alcohol" && (
+          <fieldset>
+            <legend className="mb-3 text-sm font-semibold uppercase tracking-wide">
+              3. Elige el color de la tinta
+            </legend>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-7">
+              {config.ivca.muestrasTinta.map((muestra) => {
+                const selected = colorDetail === muestra.label
+                return (
+                  <button
+                    key={muestra.id}
+                    type="button"
+                    className="text-center transition hover:opacity-100"
+                    onClick={() => {
+                      setColorOption("color_tinta")
+                      setColorDetail(muestra.label)
+                    }}
+                    aria-pressed={selected}
+                  >
+                    <div
+                      className={`relative aspect-square w-full overflow-hidden rounded-lg border-2 bg-[#F5F0E8] ${
+                        selected
+                          ? "border-primary ring-2 ring-primary/30"
+                          : "border-[#D4C4B8]"
+                      }`}
+                    >
+                      {muestra.imageSrc ? (
+                        <Image
+                          src={muestra.imageSrc}
+                          alt={muestra.label}
+                          fill
+                          sizes="112px"
+                          quality={100}
+                          className="object-cover object-center [image-rendering:high-quality] contrast-[1.06] saturate-[1.04]"
+                          unoptimized
+                        />
+                      ) : (
+                        <div
+                          className="h-full w-full border-2 border-dashed border-[#D4C4B8]"
+                          aria-hidden
+                        />
+                      )}
+                    </div>
+                    <span className="mt-1.5 flex items-center justify-center gap-1.5">
+                      <span
+                        className={`inline-flex size-3.5 shrink-0 rounded-full border-2 ${
+                          selected
+                            ? "border-primary bg-primary"
+                            : "border-[#3D2E28] bg-transparent"
+                        }`}
+                        aria-hidden
+                      />
+                      <span
+                        className={`text-xs font-semibold ${
+                          selected ? "text-primary" : "text-[#3D2E28]"
+                        }`}
+                      >
+                        {muestra.label}
+                      </span>
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          </fieldset>
+        )}
+
+        {designType === "glitter" && (
           <fieldset>
             <legend className="mb-3 text-sm font-semibold uppercase tracking-wide">
               3. Color
             </legend>
-            <div className="space-y-2">
-              {colorOptions.map((c) => (
+
+            {colorOptions.some((c) =>
+              c.value === "glitter_geoda1" || c.value === "glitter_geoda2"
+            ) && (
+              <div className="grid max-w-md grid-cols-2 gap-3">
+                {config.ivca.muestrasGeoda.map((muestra) => {
+                  const selected = colorOption === muestra.value
+                  return (
+                    <button
+                      key={muestra.id}
+                      type="button"
+                      className="text-center transition"
+                      onClick={() => {
+                        setColorOption(muestra.value)
+                        setColorDetail(muestra.label)
+                      }}
+                      aria-pressed={selected}
+                    >
+                      <div
+                        className={`aspect-square w-full overflow-hidden rounded-lg border-2 bg-[#F5F0E8] ${
+                          selected
+                            ? "border-primary ring-2 ring-primary/30"
+                            : "border-[#D4C4B8]"
+                        }`}
+                      >
+                        <img
+                          src={muestra.imageSrc}
+                          alt={muestra.label}
+                          className="h-full w-full object-cover object-center"
+                        />
+                      </div>
+                      <span className="mt-1.5 flex items-center justify-center gap-1.5">
+                        <span
+                          className={`inline-flex size-3.5 shrink-0 rounded-full border-2 ${
+                            selected
+                              ? "border-primary bg-primary"
+                              : "border-[#3D2E28] bg-transparent"
+                          }`}
+                          aria-hidden
+                        />
+                        <span
+                          className={`text-xs font-semibold ${
+                            selected ? "text-primary" : "text-[#3D2E28]"
+                          }`}
+                        >
+                          {muestra.label}
+                        </span>
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+
+            {colorOptions.some((c) => c.value === "2_colores_glitter") && (
+              <div
+                className={`space-y-3 ${
+                  colorOptions.some(
+                    (c) =>
+                      c.value === "glitter_geoda1" || c.value === "glitter_geoda2"
+                  )
+                    ? "mt-4"
+                    : ""
+                }`}
+              >
                 <label
-                  key={c.value}
                   className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
-                    colorOption === c.value ? "border-primary bg-primary/5" : "border-base-200"
+                    colorOption === "2_colores_glitter"
+                      ? "border-primary bg-primary/5"
+                      : "border-base-200"
                   }`}
                 >
                   <input
                     type="radio"
                     name="colorOption"
-                    value={c.value}
-                    checked={colorOption === c.value}
-                    onChange={() => setColorOption(c.value)}
+                    value="2_colores_glitter"
+                    checked={colorOption === "2_colores_glitter"}
+                    onChange={() => {
+                      setColorOption("2_colores_glitter")
+                      setColorDetail("")
+                    }}
                   />
-                  {c.label}
+                  Glitter combinado: {config.ivca.glitterCombinadoBase}
                 </label>
-              ))}
-            </div>
-
-            {designType === "tinta_alcohol" && (
-              <div className="mt-4">
-                <p className="mb-2 text-xs font-medium text-base-content/60">
-                  Muestras de color (próximamente)
-                </p>
-                <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-                  {config.ivca.muestrasTinta.map((muestra) => (
-                    <div key={muestra.id} className="text-center">
-                      <div
-                        className="aspect-square w-full rounded-lg border-2 border-dashed border-[#D4C4B8] bg-[#F5F0E8]"
-                        aria-hidden
-                      />
-                      <span className="mt-1 block text-[10px] text-base-content/50">
-                        {muestra.label}
-                      </span>
+                {colorOption === "2_colores_glitter" && (
+                  <div>
+                    <p className="mb-2 text-xs font-medium text-base-content/70">
+                      Elige el color a combinar
+                    </p>
+                    <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
+                      {config.ivca.glitterCombinadoColores.map((muestra) => {
+                        const detalle = `${config.ivca.glitterCombinadoBase} y ${muestra.label}`
+                        const selected = colorDetail === detalle
+                        return (
+                          <button
+                            key={muestra.id}
+                            type="button"
+                            className="text-center transition"
+                            onClick={() => {
+                              setColorOption("2_colores_glitter")
+                              setColorDetail(detalle)
+                            }}
+                            aria-pressed={selected}
+                          >
+                            <span
+                              className={`mx-auto flex size-10 items-center justify-center rounded-full border-2 ${
+                                selected
+                                  ? "border-primary ring-2 ring-primary/30"
+                                  : "border-[#D4C4B8]"
+                              }`}
+                              style={{ backgroundColor: muestra.hex }}
+                              aria-hidden
+                            />
+                            <span className="mt-1.5 flex items-center justify-center gap-1.5">
+                              <span
+                                className={`inline-flex size-3.5 shrink-0 rounded-full border-2 ${
+                                  selected
+                                    ? "border-primary bg-primary"
+                                    : "border-[#3D2E28] bg-transparent"
+                                }`}
+                                aria-hidden
+                              />
+                              <span
+                                className={`text-xs font-semibold ${
+                                  selected ? "text-primary" : "text-[#3D2E28]"
+                                }`}
+                              >
+                                {muestra.label}
+                              </span>
+                            </span>
+                          </button>
+                        )
+                      })}
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {designType === "glitter" &&
-              product?.category === "termo" &&
-              (colorOption === "glitter_geoda1" || colorOption === "glitter_geoda2") && (
-                <div className="mt-4">
-                  <p className="mb-2 text-xs font-medium text-base-content/60">
-                    Muestra de glitter geoda (próximamente)
-                  </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {config.ivca.muestrasGeoda.map((muestra) => (
-                      <div key={muestra.id} className="text-center">
-                        <div
-                          className="aspect-square w-full rounded-lg border-2 border-dashed border-[#D4C4B8] bg-[#F5F0E8]"
-                          aria-hidden
-                        />
-                        <span className="mt-1 block text-[10px] text-base-content/50">
-                          {muestra.label}
-                        </span>
-                      </div>
-                    ))}
                   </div>
-                </div>
-              )}
-
-            {colorOption === "2_colores_glitter" && (
-              <input
-                className="input input-bordered mt-3 w-full"
-                placeholder="Escribe los 2 colores de glitter"
-                value={colorDetail}
-                onChange={(e) => setColorDetail(e.target.value)}
-              />
+                )}
+              </div>
             )}
           </fieldset>
         )}
@@ -535,47 +706,151 @@ export default function QuoteWizard({
             4. Personalizar
           </legend>
           <div className="space-y-2">
-            {config.ivca.personalizaciones.map((p) => (
-              <label
-                key={p.value}
-                className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
-                  personalizationType === p.value
-                    ? "border-primary bg-primary/5"
-                    : "border-base-200"
-                }`}
-              >
+            <div className="flex gap-2">
+              {config.ivca.personalizaciones
+                .filter((p) => p.value === "nombre" || p.value === "inicial")
+                .map((p) => {
+                  const selected = personalizationType === p.value
+                  const isInicial = p.value === "inicial"
+                  return (
+                    <label
+                      key={p.value}
+                      className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
+                        isInicial
+                          ? "w-[calc(25%-0.25rem)] shrink-0"
+                          : "w-[calc(50%-0.25rem)] shrink-0"
+                      } ${
+                        selected
+                          ? "border-primary bg-primary/5"
+                          : "border-base-200"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="personalizationType"
+                        value={p.value}
+                        checked={selected}
+                        onChange={() => handlePersonalizationTypeChange(p.value)}
+                      />
+                      {p.label}
+                    </label>
+                  )
+                })}
+            </div>
+
+            {personalizationType === "nombre" && (
+              <div className="flex gap-2">
                 <input
-                  type="radio"
-                  name="personalizationType"
-                  value={p.value}
-                  checked={personalizationType === p.value}
-                  onChange={() => setPersonalizationType(p.value)}
+                  className="input input-bordered w-[calc(50%-0.25rem)] shrink-0"
+                  placeholder={copy.personalizationNombrePlaceholder}
+                  value={personalizationNombre}
+                  onChange={(e) => setPersonalizationNombre(e.target.value)}
+                  autoComplete="off"
                 />
-                {p.label}
-              </label>
-            ))}
+              </div>
+            )}
+
+            {personalizationType === "inicial" && (
+              <div className="flex gap-2">
+                <div className="w-[calc(50%-0.25rem)] shrink-0" aria-hidden />
+                <input
+                  className="input input-bordered w-[calc(25%-0.25rem)] shrink-0"
+                  placeholder={copy.personalizationInicialPlaceholder}
+                  value={personalizationInicial}
+                  maxLength={3}
+                  onChange={(e) =>
+                    setPersonalizationInicial(e.target.value.toUpperCase())
+                  }
+                  autoComplete="off"
+                />
+              </div>
+            )}
+
+            <div className="grid gap-2 sm:grid-cols-2">
+              {config.ivca.personalizaciones
+                .filter(
+                  (p) =>
+                    p.value === "inicial_nombre" || p.value === "sin_personalizar"
+                )
+                .map((p) => {
+                  const selected = personalizationType === p.value
+                  return (
+                    <label
+                      key={p.value}
+                      className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
+                        selected
+                          ? "border-primary bg-primary/5"
+                          : "border-base-200"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="personalizationType"
+                        value={p.value}
+                        checked={selected}
+                        onChange={() => handlePersonalizationTypeChange(p.value)}
+                      />
+                      {p.label}
+                    </label>
+                  )
+                })}
+            </div>
+
+            {personalizationType === "inicial_nombre" && (
+              <div className="flex items-end gap-2">
+                <label className="flex w-20 shrink-0 flex-col gap-1">
+                  <span className="text-sm font-medium">
+                    {copy.personalizationInicial}
+                  </span>
+                  <input
+                    className="input input-bordered w-full"
+                    placeholder={copy.personalizationInicialPlaceholder}
+                    value={personalizationInicial}
+                    maxLength={3}
+                    onChange={(e) =>
+                      setPersonalizationInicial(e.target.value.toUpperCase())
+                    }
+                    autoComplete="off"
+                  />
+                </label>
+                <label className="flex w-[calc(50%-0.25rem)] shrink-0 flex-col gap-1">
+                  <span className="text-sm font-medium">
+                    {copy.personalizationNombre}
+                  </span>
+                  <input
+                    className="input input-bordered w-full"
+                    placeholder={copy.personalizationNombrePlaceholder}
+                    value={personalizationNombre}
+                    onChange={(e) => setPersonalizationNombre(e.target.value)}
+                    autoComplete="off"
+                  />
+                </label>
+              </div>
+            )}
           </div>
-          {personalizationType && personalizationType !== "sin_personalizar" && (
-            <input
-              className="input input-bordered mt-3 w-full"
-              placeholder={copy.personalizationText}
-              value={personalizationText}
-              onChange={(e) => setPersonalizationText(e.target.value)}
-            />
-          )}
         </fieldset>
 
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-medium">{copy.quantity}</span>
-          <input
-            type="number"
-            min={1}
-            max={99}
-            className="input input-bordered w-32"
-            value={quantity}
-            onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
-          />
-        </label>
+        <div className="space-y-2">
+          <label className="flex flex-col gap-1">
+            <span className="text-sm font-medium">{copy.quantity}</span>
+            <input
+              type="number"
+              min={1}
+              max={99}
+              className="input input-bordered w-32"
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+            />
+          </label>
+          {unitPrice != null && (
+            <p className="text-lg font-semibold text-primary">
+              {formatearPrecio(unitPrice)}
+              {quantity > 1
+                ? ` × ${quantity} = ${formatearPrecio(unitPrice * quantity)}`
+                : ""}
+            </p>
+          )}
+        </div>
 
         {error && (
           <p role="alert" className="text-sm text-error">
@@ -618,12 +893,17 @@ export default function QuoteWizard({
                   {copy.addAnother}
                 </Link>
               )}
+              {wantsAnother === "no" && (
+                <p className="mt-3 text-sm text-primary">{copy.addAnotherNoHint}</p>
+              )}
             </fieldset>
           )}
         </div>
       </div>
 
       <QuoteCartPanel
+        panelRef={cartPanelRef}
+        emphasizeFinish={wantsAnother === "no" && items.length > 0}
         onFinish={handleFinish}
         finishing={finishing}
         error={error}

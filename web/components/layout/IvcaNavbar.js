@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ChevronDown, Menu, ShoppingCart, X } from "lucide-react"
+import { ChevronDown, Menu, X } from "lucide-react"
 import config from "@/config"
 import Logo from "@/components/Logo"
 import { urlWhatsappGeneral } from "@/lib/quotes"
@@ -27,7 +27,25 @@ function isHomeSectionHref(href) {
 function goHomeSection(event, href) {
   if (!isHomeSectionHref(href)) return false
   event.preventDefault()
-  window.location.assign(homeSectionHref(href))
+  const target = homeSectionHref(href)
+  const hash = target.includes("#") ? `#${target.split("#")[1] || ""}` : ""
+
+  // En la home: evitar que el ancla quede bajo el menú sticky (corta el video).
+  if (typeof window !== "undefined" && window.location.pathname === "/") {
+    if (!hash || hash === "#" || hash === "#inicio") {
+      window.history.pushState(null, "", "/#inicio")
+      window.scrollTo({ top: 0, behavior: "smooth" })
+      return true
+    }
+    const el = document.querySelector(hash)
+    if (el) {
+      window.history.pushState(null, "", target)
+      el.scrollIntoView({ behavior: "smooth", block: "start" })
+      return true
+    }
+  }
+
+  window.location.assign(target)
   return true
 }
 
@@ -181,15 +199,23 @@ export default function IvcaNavbar() {
   const openMenuByLabel = useCallback((label) => setOpenMenu(label), [])
 
   return (
-    <header className="sticky top-0 z-50 border-b border-base-200 bg-base-100/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b-2 border-primary bg-base-100/95 backdrop-blur">
       <div className="mx-auto max-w-6xl px-4 py-4">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
+          <Link
+            href="/#inicio"
+            className="flex items-center gap-2.5 transition hover:opacity-80"
+            aria-label={`${config.brand.logoText} — ir al inicio`}
+            onClick={(event) => {
+              goHomeSection(event, "/#inicio")
+              setMobileOpen(false)
+            }}
+          >
             <Logo className="h-[1.25rem]" />
             <span className="font-serif text-xl font-semibold tracking-wide text-primary leading-none">
               {config.brand.logoText.toUpperCase()}
             </span>
-          </div>
+          </Link>
 
           <button
             type="button"
@@ -199,15 +225,6 @@ export default function IvcaNavbar() {
           >
             {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
-
-          <Link
-            href="/cotizar"
-            className="btn btn-primary btn-sm hidden md:inline-flex"
-            aria-label="Cotizar"
-            title="Cotizar"
-          >
-            <ShoppingCart className="size-4" aria-hidden />
-          </Link>
         </div>
 
         <div className="mt-4 hidden items-center justify-between gap-6 md:flex">
@@ -300,15 +317,6 @@ export default function IvcaNavbar() {
               </li>
             ))}
           </ul>
-          <Link
-            href="/cotizar"
-            className="btn btn-primary btn-block mt-6"
-            onClick={() => setMobileOpen(false)}
-            aria-label="Cotizar"
-          >
-            <ShoppingCart className="size-5" aria-hidden />
-            <span className="sr-only">Cotizar</span>
-          </Link>
         </div>
       )}
     </header>

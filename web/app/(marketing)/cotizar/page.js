@@ -55,6 +55,7 @@ export default async function CotizarPage({ searchParams }) {
         initialVariant={variant}
         initialDesignType={designType}
         lockedProduct={Boolean(categoria)}
+        lockedVariant={Boolean(variante)}
       />
     </div>
   )
