@@ -318,11 +318,11 @@ export default function QuoteWizard({
 
         {product && (
           <div
-            className="overflow-hidden rounded-xl border border-base-200 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url(/fondos/cotizador-bg.jpg)" }}
+            className="overflow-hidden rounded-xl border border-primary/40"
+            style={{ backgroundColor: config.brand.primarySoft }}
           >
             <div className="grid gap-0 sm:grid-cols-2 sm:items-stretch">
-              <div className="flex min-h-full flex-col border-b border-white/30 sm:border-b-0 sm:border-r sm:border-white/30">
+              <div className="flex min-h-full flex-col border-b border-primary-content/25 sm:border-b-0 sm:border-r sm:border-primary-content/25">
                 <div className={imagenEstilos.contenedor}>
                   {imagenEstilos.fill ? (
                     <Image
@@ -344,7 +344,7 @@ export default function QuoteWizard({
                   )}
                 </div>
                 <div className="px-4 pb-4 text-center">
-                  <p className="text-sm font-medium text-[#3D2E28]">
+                  <p className="text-sm font-medium text-primary-content">
                     {product.name}
                     {variant ? ` · ${variant.variant_label}` : ""}
                   </p>
@@ -353,18 +353,22 @@ export default function QuoteWizard({
 
               <div className="flex flex-col justify-center gap-4 p-6">
                 <label className="flex flex-col gap-1">
-                  <span className="text-sm font-medium text-[#3D2E28]">{copy.clientName}</span>
+                  <span className="text-sm font-medium text-primary-content">
+                    {copy.clientName}
+                  </span>
                   <input
-                    className="input input-bordered border-white/60 bg-white/85 backdrop-blur-sm"
+                    className="input input-bordered border-white/40 bg-white"
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
                     required
                   />
                 </label>
                 <label className="flex flex-col gap-1">
-                  <span className="text-sm font-medium text-[#3D2E28]">{copy.clientPhone}</span>
+                  <span className="text-sm font-medium text-primary-content">
+                    {copy.clientPhone}
+                  </span>
                   <input
-                    className="input input-bordered border-white/60 bg-white/85 backdrop-blur-sm"
+                    className="input input-bordered border-white/40 bg-white"
                     inputMode="numeric"
                     value={clientPhone}
                     onChange={(e) => setClientPhone(e.target.value)}
@@ -561,10 +565,68 @@ export default function QuoteWizard({
               3. Color
             </legend>
 
-            {colorOptions.some((c) =>
-              c.value === "glitter_geoda1" || c.value === "glitter_geoda2"
+            <p className="mb-3 text-sm font-medium text-[#3D2E28]">
+              {config.ivca.glitterSelectLabel}
+            </p>
+
+            <div className="space-y-2">
+              {(() => {
+                const ordenGlitter = [
+                  "glitter_geoda1",
+                  "glitter_geoda2",
+                  "2_colores_glitter",
+                ]
+                const opciones = ordenGlitter
+                  .map((value) => colorOptions.find((c) => c.value === value))
+                  .filter(Boolean)
+
+                return opciones.map((opcion, index) => {
+                  const selected = colorOption === opcion.value
+                  const muestraGeoda = config.ivca.muestrasGeoda.find(
+                    (m) => m.value === opcion.value
+                  )
+                  const label =
+                    opcion.value === "2_colores_glitter"
+                      ? config.ivca.glitterCombinadoLabel
+                      : muestraGeoda?.label || opcion.label
+
+                  return (
+                    <label
+                      key={opcion.value}
+                      className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
+                        selected
+                          ? "border-primary bg-primary/5"
+                          : "border-base-200"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="colorOption"
+                        value={opcion.value}
+                        checked={selected}
+                        onChange={() => {
+                          setColorOption(opcion.value)
+                          if (muestraGeoda) {
+                            setColorDetail(muestraGeoda.label)
+                          } else {
+                            setColorDetail("")
+                          }
+                        }}
+                      />
+                      <span>
+                        {index + 1}.- {label}
+                      </span>
+                    </label>
+                  )
+                })
+              })()}
+            </div>
+
+            {colorOptions.some(
+              (c) =>
+                c.value === "glitter_geoda1" || c.value === "glitter_geoda2"
             ) && (
-              <div className="grid max-w-md grid-cols-2 gap-3">
+              <div className="mt-4 grid max-w-md grid-cols-2 gap-3">
                 {config.ivca.muestrasGeoda.map((muestra) => {
                   const selected = colorOption === muestra.value
                   return (
@@ -614,88 +676,56 @@ export default function QuoteWizard({
               </div>
             )}
 
-            {colorOptions.some((c) => c.value === "2_colores_glitter") && (
-              <div
-                className={`space-y-3 ${
-                  colorOptions.some(
-                    (c) =>
-                      c.value === "glitter_geoda1" || c.value === "glitter_geoda2"
-                  )
-                    ? "mt-4"
-                    : ""
-                }`}
-              >
-                <label
-                  className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
-                    colorOption === "2_colores_glitter"
-                      ? "border-primary bg-primary/5"
-                      : "border-base-200"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="colorOption"
-                    value="2_colores_glitter"
-                    checked={colorOption === "2_colores_glitter"}
-                    onChange={() => {
-                      setColorOption("2_colores_glitter")
-                      setColorDetail("")
-                    }}
-                  />
-                  Glitter combinado: {config.ivca.glitterCombinadoBase}
-                </label>
-                {colorOption === "2_colores_glitter" && (
-                  <div>
-                    <p className="mb-2 text-xs font-medium text-base-content/70">
-                      Elige el color a combinar
-                    </p>
-                    <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
-                      {config.ivca.glitterCombinadoColores.map((muestra) => {
-                        const detalle = `${config.ivca.glitterCombinadoBase} y ${muestra.label}`
-                        const selected = colorDetail === detalle
-                        return (
-                          <button
-                            key={muestra.id}
-                            type="button"
-                            className="text-center transition"
-                            onClick={() => {
-                              setColorOption("2_colores_glitter")
-                              setColorDetail(detalle)
-                            }}
-                            aria-pressed={selected}
+            {colorOption === "2_colores_glitter" && (
+              <div className="mt-4">
+                <p className="mb-2 text-xs font-medium text-base-content/70">
+                  Elige el color a combinar
+                </p>
+                <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
+                  {config.ivca.glitterCombinadoColores.map((muestra) => {
+                    const detalle = `${config.ivca.glitterCombinadoBase} y ${muestra.label}`
+                    const selected = colorDetail === detalle
+                    return (
+                      <button
+                        key={muestra.id}
+                        type="button"
+                        className="text-center transition"
+                        onClick={() => {
+                          setColorOption("2_colores_glitter")
+                          setColorDetail(detalle)
+                        }}
+                        aria-pressed={selected}
+                      >
+                        <span
+                          className={`mx-auto flex size-10 items-center justify-center rounded-full border-2 ${
+                            selected
+                              ? "border-primary ring-2 ring-primary/30"
+                              : "border-[#D4C4B8]"
+                          }`}
+                          style={{ backgroundColor: muestra.hex }}
+                          aria-hidden
+                        />
+                        <span className="mt-1.5 flex items-center justify-center gap-1.5">
+                          <span
+                            className={`inline-flex size-3.5 shrink-0 rounded-full border-2 ${
+                              selected
+                                ? "border-primary bg-primary"
+                                : "border-[#3D2E28] bg-transparent"
+                            }`}
+                            aria-hidden
+                          />
+                          <span
+                            className={`text-xs font-semibold ${
+                              selected ? "text-primary" : "text-[#3D2E28]"
+                            }`}
                           >
-                            <span
-                              className={`mx-auto flex size-10 items-center justify-center rounded-full border-2 ${
-                                selected
-                                  ? "border-primary ring-2 ring-primary/30"
-                                  : "border-[#D4C4B8]"
-                              }`}
-                              style={{ backgroundColor: muestra.hex }}
-                              aria-hidden
-                            />
-                            <span className="mt-1.5 flex items-center justify-center gap-1.5">
-                              <span
-                                className={`inline-flex size-3.5 shrink-0 rounded-full border-2 ${
-                                  selected
-                                    ? "border-primary bg-primary"
-                                    : "border-[#3D2E28] bg-transparent"
-                                }`}
-                                aria-hidden
-                              />
-                              <span
-                                className={`text-xs font-semibold ${
-                                  selected ? "text-primary" : "text-[#3D2E28]"
-                                }`}
-                              >
-                                {muestra.label}
-                              </span>
-                            </span>
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
+                            {muestra.label}
+                          </span>
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
             )}
           </fieldset>

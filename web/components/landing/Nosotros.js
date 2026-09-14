@@ -31,7 +31,7 @@ export default function Nosotros() {
         <p className="text-sm font-medium uppercase tracking-widest text-primary">
           {copy.eyebrow}
         </p>
-        <h2 className="mt-3 max-w-3xl font-serif text-3xl font-semibold tracking-tight text-[#3D2E28] md:text-5xl">
+        <h2 className="mt-3 max-w-3xl font-serif text-3xl font-semibold tracking-tight text-[#3D2E28] md:text-4xl">
           {copy.title}
         </h2>
         <div className="mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-[#5C4A42]">

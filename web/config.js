@@ -38,6 +38,8 @@ const config = {
     // Color primario en HEX. DaisyUI lo aplica como --color-primary via theme.
     // Rosa magenta del logo acuarela: cálido, artesanal y distinto al violeta genérico.
     primary: "#C94A8A",
+    // Rosa un poco más claro (como se percibe el texto "Arma tu pedido").
+    primarySoft: "#D66BA0",
     // Logo: puede ser texto o ruta a /public/logo.svg
     logoText: "IVCA Crafts",
     logoSrc: "/logo-ivca-mark.png",
@@ -146,6 +148,7 @@ const config = {
         href: "/cotizar?categoria=llavero",
       },
       { label: "NOSOTROS", href: "/#nosotros" },
+      { label: "CATALOGO", href: "/#catalogo" },
     ],
     navRight: [
       { label: "COMO PEDIR", href: "/#como-pedir" },
@@ -191,6 +194,8 @@ const config = {
       },
     ],
     glitterCombinadoBase: "Blanco",
+    glitterCombinadoLabel: "Glitter combinado: Blanco y",
+    glitterSelectLabel: "Selecciona la opción de glitter que desees",
     glitterCombinadoColores: [
       { id: "rosa", label: "Rosa", hex: "#E85A8C" },
       { id: "rojo", label: "Rojo", hex: "#C62828" },
@@ -215,7 +220,7 @@ const config = {
     ],
     colores: [
       { value: "color_tinta", label: "Color de tinta" },
-      { value: "2_colores_glitter", label: "Glitter combinado: Blanco" },
+      { value: "2_colores_glitter", label: "Glitter combinado: Blanco y" },
       { value: "glitter_geoda1", label: "Glitter Geoda 1" },
       { value: "glitter_geoda2", label: "Glitter Geoda 2" },
     ],
@@ -399,7 +404,7 @@ const config = {
     },
     features: {
       eyebrow: "Catálogo",
-      title: "Catálogo de diseños",
+      title: "Estos son algunos de nuestros trabajos",
       subtitle:
         "Ejemplos de piezas realizadas. Tú eliges la paleta y nosotros creamos un diseño nuevo para ti.",
       items: [
@@ -459,7 +464,7 @@ const config = {
     },
     finalCta: {
       eyebrow: "Catálogo",
-      title: "Catálogo de diseños",
+      title: "Estos son algunos de nuestros trabajos",
       subtitle:
         "Desliza a la derecha o izquierda para ver cada hoja de trabajos.",
       cta: { label: "Cotizar ahora", href: "/cotizar" },
@@ -477,7 +482,7 @@ const config = {
         },
         {
           id: "hoja-3",
-          label: "Más diseños",
+          label: "Termos Skinny",
           imageSrc: "/galeria/catalogo/hoja-3.png",
         },
       ],

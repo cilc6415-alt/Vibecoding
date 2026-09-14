@@ -36,13 +36,7 @@ export default function FinalCta({ showActions = true, align = "center" }) {
             {eyebrow}
           </p>
         )}
-        <h2
-          className={`mt-3 text-balance tracking-tight ${
-            isLeft || hasSheets
-              ? "max-w-3xl font-serif text-3xl font-semibold text-[#3D2E28] md:text-5xl"
-              : "text-3xl font-bold md:text-5xl"
-          }`}
-        >
+        <h2 className="mt-3 max-w-3xl text-balance font-serif text-3xl font-semibold tracking-tight text-[#3D2E28] md:text-4xl">
           {title}
         </h2>
         {subtitle && (
