@@ -17,7 +17,11 @@ export function urlWhatsappGeneral() {
 }
 
 export function etiquetaDiseno(value) {
-  return copy.disenos.find((d) => d.value === value)?.label ?? value
+  return (
+    copy.disenos.find((d) => d.value === value)?.label ??
+    copy.disenosLibreta?.find((d) => d.value === value)?.label ??
+    value
+  )
 }
 
 export function etiquetaColor(value) {
@@ -27,6 +31,9 @@ export function etiquetaColor(value) {
 /** Texto de color para carrito y WhatsApp (ej. "Color Blanco y Rosa"). */
 export function lineaColorItem(item) {
   if (!item) return null
+  if (item.productCategory === "libreta" || item.colorOption?.startsWith?.("hojas_")) {
+    return item.colorOption ? etiquetaColor(item.colorOption) : null
+  }
   if (item.designType === "tinta_alcohol" && item.colorDetail) {
     return `Color ${item.colorDetail}`
   }
@@ -43,7 +50,22 @@ export function lineaColorItem(item) {
 }
 
 export function etiquetaPersonalizacion(value) {
-  return copy.personalizaciones.find((p) => p.value === value)?.label ?? value
+  const listas = [
+    copy.personalizaciones,
+    copy.personalizacionesLlavero,
+    copy.personalizacionesLibreta,
+  ]
+  for (const lista of listas) {
+    const found = lista?.find((p) => p.value === value)
+    if (found) return found.label
+  }
+  return value
+}
+
+export function opcionesPersonalizacion(category) {
+  if (category === "llavero") return copy.personalizacionesLlavero || []
+  if (category === "libreta") return copy.personalizacionesLibreta || []
+  return copy.personalizaciones || []
 }
 
 export function etiquetaEstatus(value) {
@@ -55,6 +77,10 @@ export function calcularPrecioUnitario({ category, variantLabel, designType }) {
 
   const tabla = copy.precios?.[category]
   if (!tabla) return null
+
+  if (category === "libreta") {
+    return tabla[designType] ?? 200
+  }
 
   if (category === "termo") {
     if (!variantLabel) return null
@@ -80,6 +106,11 @@ export function calcularTotalItems(items) {
 }
 
 export function opcionesColor({ designType, category }) {
+  if (category === "libreta") {
+    return copy.colores.filter((c) =>
+      ["hojas_blancas", "hojas_colores"].includes(c.value)
+    )
+  }
   if (designType === "tinta_alcohol") {
     return copy.colores.filter((c) => c.value === "color_tinta")
   }
@@ -102,75 +133,73 @@ export function disenoDesdeVarianteLlavero(variantLabel) {
   return null
 }
 
-export function armarMensajeWhatsappCliente({ clientName, items }) {
-  const lineas = items.map((item, index) => {
-    const subtotal = (item.unitPrice ?? 0) * (item.quantity || 1)
-    const partes = [
-      `${index + 1}. ${item.productName}${item.variantLabel ? ` (${item.variantLabel})` : ""}`,
-      item.phoneModel ? `   Modelo: ${item.phoneModel}` : null,
-      `   Diseño: ${etiquetaDiseno(item.designType)}`,
-      lineaColorItem(item) ? `   ${lineaColorItem(item)}` : null,
-      `   Personalización: ${etiquetaPersonalizacion(item.personalizationType)}${item.personalizationText ? ` — ${item.personalizationText}` : ""}`,
-      `   Cantidad: ${item.quantity}`,
-      item.unitPrice != null ? `   Subtotal: ${formatearPrecio(subtotal)}` : null,
-    ].filter(Boolean)
-    return partes.join("\n")
+function lineasDetalleItem(item) {
+  const color = lineaColorItem(item)
+  const lineas = []
+
+  if (item.productCategory === "libreta") {
+    lineas.push(`   Diseño: ${etiquetaDiseno(item.designType)}`)
+    if (color) lineas.push(`   Tipo de hojas: ${color}`)
+    if (item.personalizationType === "nombre_portada" && item.personalizationText) {
+      lineas.push(`   Nombre en portada: ${item.personalizationText}`)
+    } else if (item.personalizationType === "sin_nombre_portada") {
+      lineas.push(`   Nombre en portada: Sin nombre en portada`)
+    }
+    if (item.designNotes) {
+      lineas.push(`   Describe tu diseño: ${item.designNotes}`)
+    }
+  } else {
+    if (item.phoneModel) lineas.push(`   Modelo: ${item.phoneModel}`)
+    lineas.push(`   Diseño: ${etiquetaDiseno(item.designType)}`)
+    if (color) lineas.push(`   ${color}`)
+    lineas.push(
+      `   Personalización: ${etiquetaPersonalizacion(item.personalizationType)}${
+        item.personalizationText ? ` — ${item.personalizationText}` : ""
+      }`
+    )
+  }
+
+  lineas.push(`   Cantidad: ${item.quantity}`)
+  const subtotal = (item.unitPrice ?? 0) * (item.quantity || 1)
+  const subtotalTexto = Number(subtotal).toLocaleString("es-MX", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
   })
+  lineas.push(`   Subtotal: $${subtotalTexto}`)
 
-  const total = calcularTotalItems(items)
-  const negocio = `${copy.whatsappPrefijoPais}${copy.whatsappNumero}`
-
-  return [
-    `*Cotización IVCA Crafts*`,
-    "",
-    `Hola ${clientName}, este es el resumen de tu pedido:`,
-    "",
-    ...lineas,
-    "",
-    `*Total estimado: ${formatearPrecio(total)}* (envío por confirmar)`,
-    "",
-    `Para autorizar tu pedido, envía este mensaje a IVCA Crafts por WhatsApp (${copy.whatsappNumero}) con la palabra *AUTORIZO*.`,
-    "",
-    `https://wa.me/${negocio}`,
-  ].join("\n")
+  return lineas
 }
 
+/** Mensaje de confirmación que el cliente envía a IVCA Crafts. */
 export function armarMensajeWhatsapp({ clientName, clientPhone, items }) {
+  const phone = normalizarTelefono(clientPhone)
   const lineas = items.map((item, index) => {
-    const subtotal = (item.unitPrice ?? 0) * (item.quantity || 1)
-    const partes = [
-      `${index + 1}. ${item.productName}${item.variantLabel ? ` (${item.variantLabel})` : ""}`,
-      item.phoneModel ? `   Modelo: ${item.phoneModel}` : null,
-      `   Diseño: ${etiquetaDiseno(item.designType)}`,
-      lineaColorItem(item) ? `   ${lineaColorItem(item)}` : null,
-      `   Personalización: ${etiquetaPersonalizacion(item.personalizationType)}${item.personalizationText ? ` — ${item.personalizationText}` : ""}`,
-      `   Cantidad: ${item.quantity}`,
-      item.unitPrice != null
-        ? `   Precio: ${formatearPrecio(item.unitPrice)} c/u · Subtotal: ${formatearPrecio(subtotal)}`
-        : null,
-    ].filter(Boolean)
-    return partes.join("\n")
+    const titulo = `${index + 1}. ${item.productName}${
+      item.variantLabel ? ` (${item.variantLabel})` : ""
+    }`
+    return [titulo, ...lineasDetalleItem(item)].join("\n")
   })
 
   const total = calcularTotalItems(items)
+  const totalTexto = Number(total).toLocaleString("es-MX", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  })
 
   return [
-    `Hola, soy ${clientName}. Quiero cotizar lo siguiente en IVCA Crafts:`,
+    `Hola, soy ${clientName}.`,
+    `Celular de contacto: ${phone}`,
+    "Revisé mi cotización y deseo continuar con este pedido:",
     "",
     ...lineas,
     "",
-    `Total estimado: ${formatearPrecio(total)} (envío por confirmar)`,
+    `Total: $${totalTexto} MXN`,
     "",
-    `Mi WhatsApp: ${clientPhone}`,
+    "Confirmo que revisé los datos de mi cotización y deseo continuar con mi pedido.",
+    "La entrega o envío se confirmará por separado.",
     "",
-    "¿Me confirmas disponibilidad, envío y anticipo? Gracias.",
+    `WhatsApp de contacto: https://wa.me/${copy.whatsappPrefijoPais}${phone}`,
   ].join("\n")
-}
-
-export function urlWhatsappCliente({ clientName, clientPhone, items }) {
-  const mensaje = armarMensajeWhatsappCliente({ clientName, items })
-  const phone = normalizarTelefono(clientPhone)
-  return `https://wa.me/${copy.whatsappPrefijoPais}${phone}?text=${encodeURIComponent(mensaje)}`
 }
 
 export function urlWhatsappCotizacion({ clientName, clientPhone, items }) {

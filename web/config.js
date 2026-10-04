@@ -24,7 +24,7 @@ const config = {
   app: {
     name: "IVCA Crafts",
     description:
-      "Termos, fundas y llaveros personalizados, pintados a mano para regalos únicos con valor emocional.",
+      "Termos, fundas, llaveros y libretas personalizados, pintados a mano para regalos únicos con valor emocional.",
     domain: "ivcacrafts.com", // sin https://, sin www
     locale: "es", // "es" | "en"
     // URL pública: usa NEXT_PUBLIC_APP_URL en .env. En este config solo definimos el default.
@@ -147,6 +147,10 @@ const config = {
         label: "LLAVEROS",
         href: "/cotizar?categoria=llavero",
       },
+      {
+        label: "LIBRETAS",
+        href: "/cotizar?categoria=libreta",
+      },
       { label: "NOSOTROS", href: "/#nosotros" },
       { label: "CATALOGO", href: "/#catalogo" },
     ],
@@ -213,22 +217,67 @@ const config = {
       },
       funda: { tinta_alcohol: 400, glitter: 450 },
       llavero: { tinta_alcohol: 100, glitter: 100 },
+      libreta: {
+        fondo: 200,
+        personaje_tematica: 200,
+        imagen_tematica: 200,
+      },
     },
     disenos: [
       { value: "tinta_alcohol", label: "Tinta al Alcohol" },
       { value: "glitter", label: "Glitter" },
+      { value: "fondo", label: "Fondo (color + figuras)" },
+      { value: "personaje_tematica", label: "Personaje + temática" },
+      { value: "imagen_tematica", label: "Imagen + temática" },
     ],
+    disenosLibreta: [
+      { value: "fondo", label: "Fondo (color + figuras)" },
+      { value: "personaje_tematica", label: "Personaje + temática" },
+      { value: "imagen_tematica", label: "Imagen + temática" },
+    ],
+    libretaFicha: [
+      "Artesanal y cosida a mano",
+      "Pasta dura, portada impresa y plastificada",
+      "Aprox. 19 × 11.7 cm · 70 hojas sin impresión",
+      "Separador de listón y elástico para cierre",
+    ],
+    libretaPrecioDisclaimer:
+      "El precio corresponde a un diseño sencillo. Diseños especiales pueden tener costo adicional.",
+    libretaPasoNombrePortada: "4. Nombre en portada",
+    libretaDescribeLabel: "Describe tu diseño",
+    libretaDescribePlaceholder:
+      "Ejemplo: delfín ilustrado con fondo de mar en tonos azules.",
+    libretaDescribeNota:
+      "El diseño se realizará tomando tu descripción o imagen como referencia y se adaptará al formato de la libreta. El resultado será lo más parecido posible y puede presentar variaciones.",
+    libretaNombrePortadaLabel: "Nombre en portada",
+    libretaNombrePortadaSi: "Sí, quiero nombre",
+    libretaNombrePortadaNo: "Sin nombre en portada",
+    libretaNombrePlaceholder: "Escribe el nombre para la portada",
+    libretaHojasLabel: "Tipo de hojas",
     colores: [
       { value: "color_tinta", label: "Color de tinta" },
       { value: "2_colores_glitter", label: "Glitter combinado: Blanco y" },
       { value: "glitter_geoda1", label: "Glitter Geoda 1" },
       { value: "glitter_geoda2", label: "Glitter Geoda 2" },
+      { value: "hojas_blancas", label: "Hojas blancas" },
+      { value: "hojas_colores", label: "Hojas de colores" },
     ],
     personalizaciones: [
       { value: "nombre", label: "Nombre" },
       { value: "inicial", label: "Inicial" },
       { value: "inicial_nombre", label: "Inicial + Nombre" },
       { value: "sin_personalizar", label: "Sin personalizar" },
+    ],
+    personalizacionesLlavero: [
+      { value: "sin_personalizar", label: "Sin personalizar" },
+      { value: "inicial", label: "Inicial" },
+      { value: "nombre_corto", label: "Nombre corto" },
+    ],
+    personalizacionLlaveroNombreCortoHint:
+      "Sujeto al espacio disponible según el diseño.",
+    personalizacionesLibreta: [
+      { value: "nombre_portada", label: "Con nombre en portada" },
+      { value: "sin_nombre_portada", label: "Sin nombre en portada" },
     ],
     estatusCotizacion: [
       { value: "borrador", label: "borrador" },
@@ -244,7 +293,7 @@ const config = {
         {
           number: "01",
           title: "Elige tu producto",
-          body: "Termos de 12, 20 o 30 oz, fundas para celular o llaveros de resina.",
+          body: "Termos de 12, 20 o 30 oz, fundas para celular, llaveros de resina o libretas artesanales.",
         },
         {
           number: "02",
@@ -283,7 +332,7 @@ const config = {
       title: "Piezas únicas pintadas a mano, nunca dos iguales",
       paragraphs: [
         "En IVCA Crafts pintamos cada termo y cada funda a mano con tinta al alcohol. La tinta se mueve libremente, así que ningún marmoleado se repite: tu pieza es literalmente irrepetible.",
-        "Cada trabajo se sella con resina epoxi, que le da ese brillo de cristal, protege el color y hace el acabado resistente al uso diario. Todo se elabora en nuestro taller en Chihuahua, Chih.",
+        "También elaboramos libretas artesanales cosidas a mano, de pasta dura y portada personalizada. Cada trabajo se sella con resina epoxi o se imprime con cuidado, según la pieza. Todo se elabora en nuestro taller en Chihuahua, Chih.",
       ],
       highlights: [
         "100% pintado a mano",
@@ -295,6 +344,119 @@ const config = {
       eyebrow: "Comunidad",
       title: "Síguenos en redes",
       subtitle: "Mira trabajos recientes, procesos y novedades de IVCA Crafts.",
+    },
+    cuidados: {
+      title: "Cuidados de tu producto",
+      intro:
+        "Cada pieza IVCA Crafts está elaborada y decorada a mano. Sigue estas recomendaciones para conservar su diseño y acabado en mejores condiciones por más tiempo.",
+      teaser: {
+        title: "Cuida tu pieza IVCA Crafts",
+        body: "Cada pieza artesanal merece un poco de cuidado para conservar su acabado en mejores condiciones por más tiempo.",
+        ctaLabel: "Ver recomendaciones de cuidado",
+        ctaHref: "/cuidados",
+      },
+      resinaTitle: "Cuidados para piezas con acabado de resina",
+      cards: [
+        {
+          id: "limpieza",
+          icon: "Hand",
+          anim: "wipe",
+          title: "Limpia con un paño suave",
+          body: "Utiliza un paño seco o ligeramente húmedo. Evita fibras, esponjas o materiales abrasivos que puedan rayar la superficie.",
+        },
+        {
+          id: "quimicos",
+          icon: "FlaskConical",
+          iconOverlay: "Ban",
+          anim: "ban",
+          title: "Evita alcohol, acetona y solventes",
+          body: "Estos productos pueden opacar, manchar o deteriorar el acabado de la resina.",
+        },
+        {
+          id: "golpes",
+          icon: "Shield",
+          anim: "shield",
+          title: "Evita golpes fuertes y objetos punzantes",
+          body: "Aunque la resina es resistente, puede rayarse, astillarse o dañarse con golpes o impactos fuertes.",
+        },
+        {
+          id: "sol",
+          icon: "Sun",
+          anim: "sun",
+          title: "Evita la exposición prolongada al sol",
+          body: "La exposición continua a los rayos UV y al calor puede provocar cambios graduales en el color o apariencia de la resina.",
+        },
+        {
+          id: "agua",
+          icon: "Droplet",
+          anim: "droplet",
+          title: "No dejes la pieza sumergida en agua",
+          body: "Limpia la pieza y sécala después del contacto con agua.",
+        },
+        {
+          id: "temperatura",
+          icon: "Thermometer",
+          anim: "thermo",
+          title: "Evita temperaturas extremas",
+          body: "El calor excesivo y los cambios bruscos de temperatura pueden afectar el acabado de la pieza.",
+        },
+      ],
+      especificosTitle: "Cuidados específicos",
+      productos: [
+        {
+          id: "termos",
+          title: "Termos personalizados",
+          items: [
+            "Lava tu termo a mano.",
+            "No lo introduzcas en el lavavajillas.",
+            "No lo dejes sumergido en agua.",
+            "No utilices fibras, esponjas abrasivas, alcohol, acetona o solventes sobre la decoración.",
+            "Evita golpes y objetos que puedan rayar la superficie.",
+            "Evita dejarlo durante periodos prolongados bajo el sol o dentro de un automóvil expuesto a altas temperaturas.",
+          ],
+          note: "Importante: estas recomendaciones corresponden al cuidado del acabado exterior personalizado.",
+        },
+        {
+          id: "fundas",
+          title: "Fundas para celular",
+          items: [
+            "Limpia la funda con un paño suave, seco o ligeramente húmedo.",
+            "No utilices alcohol, acetona, solventes ni limpiadores abrasivos sobre la decoración.",
+            "Evita rayarla con objetos punzantes.",
+            "Evita la exposición prolongada al sol y al calor excesivo.",
+            "Coloca y retira la funda con cuidado para proteger la decoración.",
+          ],
+        },
+        {
+          id: "llaveros",
+          title: "Llaveros de resina",
+          items: [
+            "Evita golpes fuertes, caídas y objetos que puedan rayar la superficie.",
+            "No utilices alcohol, acetona ni solventes para limpiarlos.",
+            "Evita dejarlos sumergidos en agua.",
+            "Evita la exposición prolongada al sol y a temperaturas elevadas.",
+            "Límpialos con un paño suave cuando sea necesario.",
+          ],
+        },
+      ],
+      libreta: {
+        title: "Libretas artesanales",
+        subtitle: "Cuidados distintos a las piezas con resina",
+        items: [
+          "Mantén tu libreta alejada de agua y humedad.",
+          "Evita doblar o golpear las tapas.",
+          "No coloques objetos pesados encima durante periodos prolongados.",
+          "Evita la exposición directa y prolongada al sol.",
+          "Guárdala en un lugar limpio y seco.",
+        ],
+      },
+      unicaTitle: "Una pieza hecha a mano es única",
+      unicaBody: [
+        "Los productos IVCA Crafts son elaborados y personalizados artesanalmente. Por la naturaleza de los materiales y técnicas utilizadas, pueden existir pequeñas variaciones entre una pieza y otra.",
+        "Los colores y acabados también pueden presentar cambios graduales con el paso del tiempo y la exposición al ambiente. Seguir estas recomendaciones ayudará a conservar tu pieza en mejores condiciones.",
+      ],
+      ctaTitle: "¿Tienes dudas sobre el cuidado de tu producto?",
+      ctaLabel: "Consultar por WhatsApp",
     },
     cotizar: {
       title: "Cotizador",
@@ -316,7 +478,8 @@ const config = {
       finish: "Terminar cotización",
       successTitle: "¡Cotización lista!",
       successMessage:
-        "Tu cotización está lista y se envió a tu WhatsApp. Favor de verificar y autorizar en WhatsApp para continuar con el proceso.",
+        "Tu cotización quedó registrada. Revisa el mensaje preparado en WhatsApp y envíalo para confirmar que deseas continuar con tu pedido.",
+      openWhatsappConfirm: "Abrir WhatsApp para confirmar",
       backHome: "Volver al inicio",
       edit: "Editar",
       remove: "Quitar",
@@ -348,6 +511,11 @@ const config = {
         phoneModel: "Escribe el modelo de tu teléfono.",
         variant: "Elige la variante de tu producto.",
         emptyCart: "Agrega al menos un producto al carrito.",
+        saveFailed: "No pudimos registrar tu cotización. Intenta de nuevo.",
+        libretaHojas: "Elige el tipo de hojas.",
+        libretaNombrePortada: "Indica si quieres nombre en la portada.",
+        libretaNombre: "Escribe el nombre para la portada.",
+        libretaDescribe: "Describe tu diseño.",
       },
     },
   },
@@ -438,6 +606,12 @@ const config = {
           body: "Un detalle único con tinta al alcohol o glitter.",
           href: "/cotizar?categoria=llavero",
         },
+        {
+          icon: "BookOpen",
+          title: "Libreta artesanal",
+          body: "Pasta dura, portada personalizada y 70 hojas. Desde $200.",
+          href: "/cotizar?categoria=libreta",
+        },
       ],
     },
     faq: {
@@ -485,6 +659,11 @@ const config = {
           label: "Termos Skinny",
           imageSrc: "/galeria/catalogo/hoja-3.png",
         },
+        {
+          id: "hoja-4",
+          label: "Libretas",
+          imageSrc: "/galeria/catalogo/hoja-4.png",
+        },
       ],
     },
     waitlist: {
@@ -497,7 +676,7 @@ const config = {
     },
     footer: {
       tagline:
-        "IVCA Crafts · termos, fundas y llaveros pintados a mano en Chihuahua, Chih.",
+        "IVCA Crafts · termos, fundas, llaveros y libretas personalizados en Chihuahua, Chih.",
       columns: [
         {
           title: "Producto",
@@ -511,6 +690,7 @@ const config = {
           links: [
             { label: "Nosotros", href: "/#nosotros" },
             { label: "Envíos", href: "/#envios" },
+            { label: "Cuidados", href: "/cuidados" },
           ],
         },
         {
@@ -556,7 +736,7 @@ const config = {
         currency: "USD",
         interval: "set",
         description: "Para un regalo más completo.",
-        features: ["Termo, funda o llavero", "Diseño exclusivo", "Prioridad en entrega"],
+        features: ["Termo, funda, llavero o libreta", "Diseño exclusivo", "Prioridad en entrega"],
         cta: "Armar mi set",
         highlighted: true,
       },

@@ -353,3 +353,210 @@ h4,
 .prose-vf hr {
   @apply my-8 border-base-300;
 }
+
+/* ------------------------------------------------------------
+   Cuidados — animaciones discretas solo en hover/focus
+   ------------------------------------------------------------ */
+.cuidado-icon {
+  transform-origin: center;
+}
+
+.cuidado-teaser:hover .cuidado-icon--wipe,
+.cuidado-teaser:focus-within .cuidado-icon--wipe,
+.cuidado-card:hover .cuidado-icon--wipe,
+.cuidado-card:focus-within .cuidado-icon--wipe {
+  animation: cuidado-wipe 0.55s ease-in-out 1;
+}
+
+.cuidado-card:hover .cuidado-icon--ban .cuidado-icon__overlay,
+.cuidado-card:focus-within .cuidado-icon--ban .cuidado-icon__overlay {
+  animation: cuidado-ban-pulse 0.5s ease-in-out 1;
+}
+
+.cuidado-card:hover .cuidado-icon--shield,
+.cuidado-card:focus-within .cuidado-icon--shield {
+  animation: cuidado-shield 0.45s ease-in-out 1;
+}
+
+/* Sol en /cuidados: giro corto (lenguaje de la página completa) */
+.cuidado-card:hover .cuidado-icon--sun,
+.cuidado-card:focus-within .cuidado-icon--sun {
+  animation: cuidado-sun 0.7s ease-in-out 1;
+}
+
+/* Sol en teaser de Inicio: pulso/expansión de rayos (más legible a tamaño pequeño) */
+.cuidado-teaser:hover .cuidado-icon--sun,
+.cuidado-teaser:focus-within .cuidado-icon--sun {
+  animation: cuidado-sun-pulse 0.55s ease-in-out 1;
+}
+
+.cuidado-card:hover .cuidado-icon--droplet,
+.cuidado-card:focus-within .cuidado-icon--droplet {
+  animation: cuidado-droplet 0.55s ease-in-out 1;
+}
+
+.cuidado-thermo-level {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  transform: scaleY(0.55);
+}
+
+.cuidado-teaser .cuidado-thermo-heat__line {
+  opacity: 0.7;
+}
+
+.cuidado-teaser:hover .cuidado-thermo-level,
+.cuidado-teaser:focus-within .cuidado-thermo-level,
+.cuidado-card:hover .cuidado-thermo-level,
+.cuidado-card:focus-within .cuidado-thermo-level {
+  animation: cuidado-thermo-level 0.65s ease-out 1 forwards;
+}
+
+.cuidado-teaser:hover .cuidado-thermo-heat__line,
+.cuidado-teaser:focus-within .cuidado-thermo-heat__line,
+.cuidado-card:hover .cuidado-thermo-heat__line,
+.cuidado-card:focus-within .cuidado-thermo-heat__line {
+  animation: cuidado-thermo-heat 0.55s ease-in-out 1;
+}
+
+.cuidado-teaser:hover .cuidado-thermo-heat__line:nth-child(2),
+.cuidado-teaser:focus-within .cuidado-thermo-heat__line:nth-child(2),
+.cuidado-card:hover .cuidado-thermo-heat__line:nth-child(2),
+.cuidado-card:focus-within .cuidado-thermo-heat__line:nth-child(2) {
+  animation-delay: 0.06s;
+}
+
+.cuidado-teaser:hover .cuidado-thermo-heat__line:nth-child(3),
+.cuidado-teaser:focus-within .cuidado-thermo-heat__line:nth-child(3),
+.cuidado-card:hover .cuidado-thermo-heat__line:nth-child(3),
+.cuidado-card:focus-within .cuidado-thermo-heat__line:nth-child(3) {
+  animation-delay: 0.12s;
+}
+
+@keyframes cuidado-wipe {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(3px);
+  }
+  70% {
+    transform: translateX(-2px);
+  }
+}
+
+@keyframes cuidado-ban-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.9;
+  }
+}
+
+@keyframes cuidado-shield {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes cuidado-sun {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(28deg);
+  }
+}
+
+@keyframes cuidado-sun-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes cuidado-droplet {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes cuidado-thermo-level {
+  0% {
+    transform: scaleY(0.55);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes cuidado-thermo-heat {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(1.5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cuidado-card,
+  .cuidado-card:hover,
+  .cuidado-card:focus-visible,
+  .cuidado-card:focus-within {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .cuidado-teaser:hover .cuidado-icon--wipe,
+  .cuidado-teaser:focus-within .cuidado-icon--wipe,
+  .cuidado-card:hover .cuidado-icon--wipe,
+  .cuidado-card:focus-within .cuidado-icon--wipe,
+  .cuidado-card:hover .cuidado-icon--ban .cuidado-icon__overlay,
+  .cuidado-card:focus-within .cuidado-icon--ban .cuidado-icon__overlay,
+  .cuidado-card:hover .cuidado-icon--shield,
+  .cuidado-card:focus-within .cuidado-icon--shield,
+  .cuidado-teaser:hover .cuidado-icon--sun,
+  .cuidado-teaser:focus-within .cuidado-icon--sun,
+  .cuidado-card:hover .cuidado-icon--sun,
+  .cuidado-card:focus-within .cuidado-icon--sun,
+  .cuidado-card:hover .cuidado-icon--droplet,
+  .cuidado-card:focus-within .cuidado-icon--droplet,
+  .cuidado-teaser:hover .cuidado-thermo-level,
+  .cuidado-teaser:focus-within .cuidado-thermo-level,
+  .cuidado-card:hover .cuidado-thermo-level,
+  .cuidado-card:focus-within .cuidado-thermo-level,
+  .cuidado-teaser:hover .cuidado-thermo-heat__line,
+  .cuidado-teaser:focus-within .cuidado-thermo-heat__line,
+  .cuidado-card:hover .cuidado-thermo-heat__line,
+  .cuidado-card:focus-within .cuidado-thermo-heat__line {
+    animation: none !important;
+  }
+
+  .cuidado-teaser .cuidado-thermo-level {
+    transform: scaleY(0.85);
+  }
+
+  .cuidado-thermo-level {
+    transform: scaleY(0.85);
+  }
+}

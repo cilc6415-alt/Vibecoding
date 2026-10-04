@@ -5,6 +5,7 @@ const IMAGENES_PRODUCTO = {
     termo: "/productos/termo-20oz.png",
     funda: "/productos/funda.png",
     llavero: "/productos/llavero.png",
+    libreta: "/productos/libreta.png",
   },
   variants: {
     "12 onzas": "/productos/termo-12oz.png",
@@ -51,6 +52,13 @@ export const CATALOG_FALLBACK = {
       name: "Llavero de resina",
       category: "llavero",
       base_image_url: "/productos/llavero.png",
+      active: true,
+    },
+    {
+      id: "a1000000-0000-4000-8000-000000000004",
+      name: "Libreta artesanal",
+      category: "libreta",
+      base_image_url: "/productos/libreta.png",
       active: true,
     },
   ],
@@ -133,9 +141,26 @@ const VARIANT_SLUGS = {
 
 export function getCatalogData(products, variants) {
   const hasDb = products?.length > 0 && variants?.length > 0
+  let catalogProducts = hasDb ? [...products] : [...CATALOG_FALLBACK.products]
+  let catalogVariants = hasDb ? [...variants] : [...CATALOG_FALLBACK.variants]
+
+  // Si la BD aún no tiene categorías nuevas (p. ej. libreta sin migración 013),
+  // se agregan desde el fallback local sin sustituir el resto del catálogo.
+  if (hasDb) {
+    const cats = new Set(catalogProducts.map((p) => p.category))
+    for (const p of CATALOG_FALLBACK.products) {
+      if (!cats.has(p.category)) {
+        catalogProducts.push(p)
+        catalogVariants.push(
+          ...CATALOG_FALLBACK.variants.filter((v) => v.product_id === p.id)
+        )
+      }
+    }
+  }
+
   const raw = {
-    products: hasDb ? products : CATALOG_FALLBACK.products,
-    variants: hasDb ? variants : CATALOG_FALLBACK.variants,
+    products: catalogProducts,
+    variants: catalogVariants,
     usingFallback: !hasDb,
   }
   const conImagenes = aplicarImagenesCatalogo(raw.products, raw.variants)

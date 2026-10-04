@@ -10,8 +10,9 @@ import {
   formatearPrecio,
   normalizarTelefono,
   opcionesColor,
+  opcionesPersonalizacion,
   telefonoValido,
-  urlWhatsappCliente,
+  urlWhatsappCotizacion,
 } from "@/lib/quotes"
 import { imagenProducto } from "@/lib/catalog"
 import QuoteCartPanel from "./QuoteCartPanel"
@@ -61,6 +62,14 @@ function estilosImagenCotizador(product, variant) {
     }
   }
 
+  if (product?.category === "libreta") {
+    return {
+      contenedor: "relative min-h-[300px] flex-1",
+      imagen: "object-contain object-center p-4 drop-shadow-md",
+      fill: true,
+    }
+  }
+
   return {
     contenedor: "relative min-h-[300px] flex-1",
     imagen: "object-contain object-center p-6 drop-shadow-md",
@@ -98,11 +107,13 @@ export default function QuoteWizard({
   const [personalizationType, setPersonalizationType] = useState("")
   const [personalizationNombre, setPersonalizationNombre] = useState("")
   const [personalizationInicial, setPersonalizationInicial] = useState("")
+  const [designNotes, setDesignNotes] = useState("")
   const [phoneModel, setPhoneModel] = useState("")
   const [quantity, setQuantity] = useState(1)
   const [error, setError] = useState("")
   const [finishing, setFinishing] = useState(false)
   const [finished, setFinished] = useState(false)
+  const [whatsappConfirmUrl, setWhatsappConfirmUrl] = useState("")
   const [wantsAnother, setWantsAnother] = useState(null)
   const cartPanelRef = useRef(null)
 
@@ -113,8 +124,13 @@ export default function QuoteWizard({
 
   const imagenEstilos = estilosImagenCotizador(product, variant)
 
+  const isLibreta = product?.category === "libreta"
+  const isLlavero = product?.category === "llavero"
+
   const productVariants = useMemo(() => {
-    if (!product || product.category === "llavero") return []
+    if (!product || product.category === "llavero" || product.category === "libreta") {
+      return []
+    }
     return variants.filter(
       (v) => v.product_id === product.id && v.variant_type !== "design"
     )
@@ -127,6 +143,19 @@ export default function QuoteWizard({
         : [],
     [product, designType]
   )
+
+  const personalizacionOpciones = useMemo(
+    () => (product ? opcionesPersonalizacion(product.category) : []),
+    [product]
+  )
+
+  const disenosDisponibles = useMemo(() => {
+    if (!product) return []
+    if (product.category === "libreta") return config.ivca.disenosLibreta || []
+    return (config.ivca.disenos || []).filter((d) =>
+      ["tinta_alcohol", "glitter"].includes(d.value)
+    )
+  }, [product])
 
   const unitPrice = useMemo(
     () =>
@@ -151,6 +180,7 @@ export default function QuoteWizard({
     setPersonalizationType("")
     setPersonalizationNombre("")
     setPersonalizationInicial("")
+    setDesignNotes("")
     setPhoneModel("")
     setQuantity(1)
     setError("")
@@ -160,9 +190,29 @@ export default function QuoteWizard({
     if (!clientName.trim()) return copy.errors.name
     if (!telefonoValido(normalizarTelefono(clientPhone))) return copy.errors.phone
     if (!product) return "Elige un producto."
-    if (product.category !== "llavero" && !variant) return copy.errors.variant
+    if (
+      product.category !== "llavero" &&
+      product.category !== "libreta" &&
+      !variant
+    ) {
+      return copy.errors.variant
+    }
     if (product.category === "funda" && !phoneModel.trim()) return copy.errors.phoneModel
     if (!designType) return copy.errors.design
+
+    if (isLibreta) {
+      if (!colorOption?.startsWith("hojas_")) return copy.errors.libretaHojas
+      if (!personalizationType) return copy.errors.libretaNombrePortada
+      if (
+        personalizationType === "nombre_portada" &&
+        !personalizationNombre.trim()
+      ) {
+        return copy.errors.libretaNombre
+      }
+      if (!designNotes.trim()) return copy.errors.libretaDescribe
+      return null
+    }
+
     if (!colorOption) return copy.errors.color
     if (
       designType === "tinta_alcohol" &&
@@ -175,7 +225,10 @@ export default function QuoteWizard({
       return "Elige el color a combinar con blanco."
     }
     if (!personalizationType) return copy.errors.personalization
-    if (personalizationType === "nombre" && !personalizationNombre.trim()) {
+    if (
+      (personalizationType === "nombre" || personalizationType === "nombre_corto") &&
+      !personalizationNombre.trim()
+    ) {
       return copy.errors.personalizationNombre
     }
     if (personalizationType === "inicial" && !personalizationInicial.trim()) {
@@ -189,7 +242,13 @@ export default function QuoteWizard({
   }
 
   function textoPersonalizacion() {
-    if (personalizationType === "nombre") return personalizationNombre.trim()
+    if (
+      personalizationType === "nombre" ||
+      personalizationType === "nombre_corto" ||
+      personalizationType === "nombre_portada"
+    ) {
+      return personalizationNombre.trim()
+    }
     if (personalizationType === "inicial") {
       return personalizationInicial.trim().slice(0, 3).toUpperCase()
     }
@@ -205,6 +264,27 @@ export default function QuoteWizard({
     setPersonalizationType(value)
     setPersonalizationNombre("")
     setPersonalizationInicial("")
+  }
+
+  function handleSelectProduct(p) {
+    setProduct(p)
+    if (p.category === "llavero" || p.category === "libreta") {
+      setVariant(null)
+    } else {
+      const firstVariant = variants.find(
+        (v) => v.product_id === p.id && v.variant_type !== "design"
+      )
+      setVariant(firstVariant || null)
+    }
+    setDesignType("")
+    setColorOption("")
+    setColorDetail("")
+    setPersonalizationType("")
+    setPersonalizationNombre("")
+    setPersonalizationInicial("")
+    setDesignNotes("")
+    setPhoneModel("")
+    setError("")
   }
 
   function handleAddToCart() {
@@ -227,6 +307,7 @@ export default function QuoteWizard({
       colorDetail: colorDetail.trim() || null,
       personalizationType,
       personalizationText: textoPersonalizacion(),
+      designNotes: isLibreta ? designNotes.trim() || null : null,
       quantity,
       unitPrice,
     })
@@ -249,6 +330,9 @@ export default function QuoteWizard({
       return
     }
 
+    // Abrir pestaña en el mismo gesto del clic para evitar bloqueo del navegador.
+    const waTab = window.open("about:blank", "_blank")
+
     setFinishing(true)
     setError("")
 
@@ -256,8 +340,9 @@ export default function QuoteWizard({
     const name = clientName.trim()
     const cartItems = [...items]
 
+    let waUrl = ""
     try {
-      await fetch("/api/quotes", {
+      const response = await fetch("/api/quotes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -266,27 +351,25 @@ export default function QuoteWizard({
           items: cartItems,
         }),
       })
+      if (!response.ok) throw new Error("save_failed")
+
+      waUrl = urlWhatsappCotizacion({
+        clientName: name,
+        clientPhone: phone,
+        items: cartItems,
+      })
+
+      if (waTab && !waTab.closed) {
+        waTab.location.href = waUrl
+      }
     } catch {
-      // Sin tablas en Supabase: seguimos al WhatsApp igual.
+      if (waTab && !waTab.closed) waTab.close()
+      setError(copy.errors.saveFailed)
+      setFinishing(false)
+      return
     }
 
-    const waUrl = urlWhatsappCliente({
-      clientName: name,
-      clientPhone: phone,
-      items: cartItems,
-    })
-
-    // Abrir WhatsApp en pestaña nueva sin abandonar el cotizador.
-    // (window.open con noopener devolvía null y el fallback location.href
-    // sacaba al usuario de la página.)
-    const anchor = document.createElement("a")
-    anchor.href = waUrl
-    anchor.target = "_blank"
-    anchor.rel = "noopener noreferrer"
-    document.body.appendChild(anchor)
-    anchor.click()
-    anchor.remove()
-
+    setWhatsappConfirmUrl(waUrl)
     clearCart()
     setWantsAnother(null)
     setFinished(true)
@@ -298,9 +381,21 @@ export default function QuoteWizard({
       <div className="rounded-2xl border border-success/30 bg-success/10 p-8 text-center">
         <h2 className="text-2xl font-semibold text-success">{copy.successTitle}</h2>
         <p className="mt-3 text-base-content/70">{copy.successMessage}</p>
-        <Link href="/#inicio" className="btn btn-primary mt-8">
-          {copy.backHome}
-        </Link>
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          {whatsappConfirmUrl && (
+            <a
+              href={whatsappConfirmUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary"
+            >
+              {copy.openWhatsappConfirm}
+            </a>
+          )}
+          <Link href="/#inicio" className="btn btn-outline">
+            {copy.backHome}
+          </Link>
+        </div>
       </div>
     )
   }
@@ -400,21 +495,7 @@ export default function QuoteWizard({
                       ? "border-primary bg-primary/5"
                       : "border-base-200 hover:border-primary/40"
                   }`}
-                  onClick={() => {
-                    setProduct(p)
-                    if (p.category === "llavero") {
-                      setVariant(null)
-                    } else {
-                      const firstVariant = variants.find(
-                        (v) =>
-                          v.product_id === p.id && v.variant_type !== "design"
-                      )
-                      setVariant(firstVariant || null)
-                    }
-                    setDesignType("")
-                    setColorOption("")
-                    setPhoneModel("")
-                  }}
+                  onClick={() => handleSelectProduct(p)}
                 >
                   {p.name}
                 </button>
@@ -454,12 +535,27 @@ export default function QuoteWizard({
           )}
         </fieldset>
 
+        {isLibreta && (
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+            <ul className="space-y-1.5 text-sm text-[#3D2E28]">
+              {(config.ivca.libretaFicha || []).map((linea) => (
+                <li key={linea} className="flex gap-2">
+                  <span className="text-primary" aria-hidden>
+                    ·
+                  </span>
+                  <span>{linea}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <fieldset>
           <legend className="mb-3 text-sm font-semibold uppercase tracking-wide">
             2. Diseño
           </legend>
           <div className="grid gap-2 sm:grid-cols-2">
-            {config.ivca.disenos.map((d) => (
+            {disenosDisponibles.map((d) => (
               <label
                 key={d.value}
                 className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
@@ -474,6 +570,11 @@ export default function QuoteWizard({
                   onChange={() => {
                     setDesignType(d.value)
                     setColorDetail("")
+                    if (isLibreta) {
+                      // Las hojas se eligen aparte; no resetear si ya hay tipo.
+                      if (!colorOption?.startsWith("hojas_")) setColorOption("")
+                      return
+                    }
                     if (d.value === "tinta_alcohol") {
                       setColorOption("color_tinta")
                     } else if (
@@ -492,7 +593,42 @@ export default function QuoteWizard({
           </div>
         </fieldset>
 
-        {designType === "tinta_alcohol" && (
+        {isLibreta && designType && (
+          <fieldset>
+            <legend className="mb-3 text-sm font-semibold uppercase tracking-wide">
+              3. {config.ivca.libretaHojasLabel}
+            </legend>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {colorOptions.map((opcion) => {
+                const selected = colorOption === opcion.value
+                return (
+                  <label
+                    key={opcion.value}
+                    className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
+                      selected
+                        ? "border-primary bg-primary/5"
+                        : "border-base-200"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="colorOption"
+                      value={opcion.value}
+                      checked={selected}
+                      onChange={() => {
+                        setColorOption(opcion.value)
+                        setColorDetail("")
+                      }}
+                    />
+                    <span>{opcion.label}</span>
+                  </label>
+                )
+              })}
+            </div>
+          </fieldset>
+        )}
+
+        {!isLibreta && designType === "tinta_alcohol" && (
           <fieldset>
             <legend className="mb-3 text-sm font-semibold uppercase tracking-wide">
               3. Elige el color de la tinta
@@ -559,7 +695,7 @@ export default function QuoteWizard({
           </fieldset>
         )}
 
-        {designType === "glitter" && (
+        {!isLibreta && designType === "glitter" && (
           <fieldset>
             <legend className="mb-3 text-sm font-semibold uppercase tracking-wide">
               3. Color
@@ -733,23 +869,18 @@ export default function QuoteWizard({
 
         <fieldset>
           <legend className="mb-3 text-sm font-semibold uppercase tracking-wide">
-            4. Personalizar
+            {isLibreta ? config.ivca.libretaPasoNombrePortada : "4. Personalizar"}
           </legend>
-          <div className="space-y-2">
-            <div className="flex gap-2">
-              {config.ivca.personalizaciones
-                .filter((p) => p.value === "nombre" || p.value === "inicial")
-                .map((p) => {
+
+          {isLibreta ? (
+            <div className="space-y-3">
+              <div className="grid gap-2 sm:grid-cols-2">
+                {personalizacionOpciones.map((p) => {
                   const selected = personalizationType === p.value
-                  const isInicial = p.value === "inicial"
                   return (
                     <label
                       key={p.value}
                       className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
-                        isInicial
-                          ? "w-[calc(25%-0.25rem)] shrink-0"
-                          : "w-[calc(50%-0.25rem)] shrink-0"
-                      } ${
                         selected
                           ? "border-primary bg-primary/5"
                           : "border-base-200"
@@ -766,25 +897,60 @@ export default function QuoteWizard({
                     </label>
                   )
                 })}
-            </div>
-
-            {personalizationType === "nombre" && (
-              <div className="flex gap-2">
+              </div>
+              {personalizationType === "nombre_portada" && (
                 <input
-                  className="input input-bordered w-[calc(50%-0.25rem)] shrink-0"
-                  placeholder={copy.personalizationNombrePlaceholder}
+                  className="input input-bordered w-full"
+                  placeholder={config.ivca.libretaNombrePlaceholder}
                   value={personalizationNombre}
                   onChange={(e) => setPersonalizationNombre(e.target.value)}
                   autoComplete="off"
                 />
+              )}
+              <label className="flex flex-col gap-1">
+                <span className="text-sm font-medium">
+                  {config.ivca.libretaDescribeLabel}
+                </span>
+                <textarea
+                  className="textarea textarea-bordered min-h-24"
+                  placeholder={config.ivca.libretaDescribePlaceholder}
+                  value={designNotes}
+                  onChange={(e) => setDesignNotes(e.target.value)}
+                />
+              </label>
+              <p className="text-xs text-base-content/60">
+                {config.ivca.libretaDescribeNota}
+              </p>
+            </div>
+          ) : isLlavero ? (
+            <div className="space-y-3">
+              <div className="grid gap-2 sm:grid-cols-3">
+                {personalizacionOpciones.map((p) => {
+                  const selected = personalizationType === p.value
+                  return (
+                    <label
+                      key={p.value}
+                      className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
+                        selected
+                          ? "border-primary bg-primary/5"
+                          : "border-base-200"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="personalizationType"
+                        value={p.value}
+                        checked={selected}
+                        onChange={() => handlePersonalizationTypeChange(p.value)}
+                      />
+                      {p.label}
+                    </label>
+                  )
+                })}
               </div>
-            )}
-
-            {personalizationType === "inicial" && (
-              <div className="flex gap-2">
-                <div className="w-[calc(50%-0.25rem)] shrink-0" aria-hidden />
+              {personalizationType === "inicial" && (
                 <input
-                  className="input input-bordered w-[calc(25%-0.25rem)] shrink-0"
+                  className="input input-bordered w-24"
                   placeholder={copy.personalizationInicialPlaceholder}
                   value={personalizationInicial}
                   maxLength={3}
@@ -793,47 +959,73 @@ export default function QuoteWizard({
                   }
                   autoComplete="off"
                 />
-              </div>
-            )}
-
-            <div className="grid gap-2 sm:grid-cols-2">
-              {config.ivca.personalizaciones
-                .filter(
-                  (p) =>
-                    p.value === "inicial_nombre" || p.value === "sin_personalizar"
-                )
-                .map((p) => {
-                  const selected = personalizationType === p.value
-                  return (
-                    <label
-                      key={p.value}
-                      className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
-                        selected
-                          ? "border-primary bg-primary/5"
-                          : "border-base-200"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="personalizationType"
-                        value={p.value}
-                        checked={selected}
-                        onChange={() => handlePersonalizationTypeChange(p.value)}
-                      />
-                      {p.label}
-                    </label>
-                  )
-                })}
-            </div>
-
-            {personalizationType === "inicial_nombre" && (
-              <div className="flex items-end gap-2">
-                <label className="flex w-20 shrink-0 flex-col gap-1">
-                  <span className="text-sm font-medium">
-                    {copy.personalizationInicial}
-                  </span>
+              )}
+              {personalizationType === "nombre_corto" && (
+                <div className="space-y-1">
                   <input
-                    className="input input-bordered w-full"
+                    className="input input-bordered w-full max-w-xs"
+                    placeholder={copy.personalizationNombrePlaceholder}
+                    value={personalizationNombre}
+                    onChange={(e) => setPersonalizationNombre(e.target.value)}
+                    autoComplete="off"
+                  />
+                  <p className="text-xs text-base-content/60">
+                    {config.ivca.personalizacionLlaveroNombreCortoHint}
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                {personalizacionOpciones
+                  .filter((p) => p.value === "nombre" || p.value === "inicial")
+                  .map((p) => {
+                    const selected = personalizationType === p.value
+                    const isInicial = p.value === "inicial"
+                    return (
+                      <label
+                        key={p.value}
+                        className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
+                          isInicial
+                            ? "w-[calc(25%-0.25rem)] shrink-0"
+                            : "w-[calc(50%-0.25rem)] shrink-0"
+                        } ${
+                          selected
+                            ? "border-primary bg-primary/5"
+                            : "border-base-200"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="personalizationType"
+                          value={p.value}
+                          checked={selected}
+                          onChange={() => handlePersonalizationTypeChange(p.value)}
+                        />
+                        {p.label}
+                      </label>
+                    )
+                  })}
+              </div>
+
+              {personalizationType === "nombre" && (
+                <div className="flex gap-2">
+                  <input
+                    className="input input-bordered w-[calc(50%-0.25rem)] shrink-0"
+                    placeholder={copy.personalizationNombrePlaceholder}
+                    value={personalizationNombre}
+                    onChange={(e) => setPersonalizationNombre(e.target.value)}
+                    autoComplete="off"
+                  />
+                </div>
+              )}
+
+              {personalizationType === "inicial" && (
+                <div className="flex gap-2">
+                  <div className="w-[calc(50%-0.25rem)] shrink-0" aria-hidden />
+                  <input
+                    className="input input-bordered w-[calc(25%-0.25rem)] shrink-0"
                     placeholder={copy.personalizationInicialPlaceholder}
                     value={personalizationInicial}
                     maxLength={3}
@@ -842,22 +1034,73 @@ export default function QuoteWizard({
                     }
                     autoComplete="off"
                   />
-                </label>
-                <label className="flex w-[calc(50%-0.25rem)] shrink-0 flex-col gap-1">
-                  <span className="text-sm font-medium">
-                    {copy.personalizationNombre}
-                  </span>
-                  <input
-                    className="input input-bordered w-full"
-                    placeholder={copy.personalizationNombrePlaceholder}
-                    value={personalizationNombre}
-                    onChange={(e) => setPersonalizationNombre(e.target.value)}
-                    autoComplete="off"
-                  />
-                </label>
+                </div>
+              )}
+
+              <div className="grid gap-2 sm:grid-cols-2">
+                {personalizacionOpciones
+                  .filter(
+                    (p) =>
+                      p.value === "inicial_nombre" ||
+                      p.value === "sin_personalizar"
+                  )
+                  .map((p) => {
+                    const selected = personalizationType === p.value
+                    return (
+                      <label
+                        key={p.value}
+                        className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 text-sm ${
+                          selected
+                            ? "border-primary bg-primary/5"
+                            : "border-base-200"
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="personalizationType"
+                          value={p.value}
+                          checked={selected}
+                          onChange={() => handlePersonalizationTypeChange(p.value)}
+                        />
+                        {p.label}
+                      </label>
+                    )
+                  })}
               </div>
-            )}
-          </div>
+
+              {personalizationType === "inicial_nombre" && (
+                <div className="flex items-end gap-2">
+                  <label className="flex w-20 shrink-0 flex-col gap-1">
+                    <span className="text-sm font-medium">
+                      {copy.personalizationInicial}
+                    </span>
+                    <input
+                      className="input input-bordered w-full"
+                      placeholder={copy.personalizationInicialPlaceholder}
+                      value={personalizationInicial}
+                      maxLength={3}
+                      onChange={(e) =>
+                        setPersonalizationInicial(e.target.value.toUpperCase())
+                      }
+                      autoComplete="off"
+                    />
+                  </label>
+                  <label className="flex w-[calc(50%-0.25rem)] shrink-0 flex-col gap-1">
+                    <span className="text-sm font-medium">
+                      {copy.personalizationNombre}
+                    </span>
+                    <input
+                      className="input input-bordered w-full"
+                      placeholder={copy.personalizationNombrePlaceholder}
+                      value={personalizationNombre}
+                      onChange={(e) => setPersonalizationNombre(e.target.value)}
+                      autoComplete="off"
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
+          )}
         </fieldset>
 
         <div className="space-y-2">
@@ -878,6 +1121,11 @@ export default function QuoteWizard({
               {quantity > 1
                 ? ` × ${quantity} = ${formatearPrecio(unitPrice * quantity)}`
                 : ""}
+            </p>
+          )}
+          {isLibreta && unitPrice != null && (
+            <p className="text-xs text-base-content/60">
+              {config.ivca.libretaPrecioDisclaimer}
             </p>
           )}
         </div>

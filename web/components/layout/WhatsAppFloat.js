@@ -11,6 +11,7 @@ const AVATARES = {
   TERMOS: "/productos/termo-20oz.png",
   FUNDAS: "/productos/funda.png",
   LLAVEROS: "/productos/llavero.png",
+  LIBRETAS: "/productos/libreta.png",
 }
 
 function productosDesdeNav(navLeft) {
@@ -32,6 +33,7 @@ function avatarProducto(label) {
   if (key.includes("TERMO")) return AVATARES.TERMOS
   if (key.includes("FUNDA")) return AVATARES.FUNDAS
   if (key.includes("LLAVERO")) return AVATARES.LLAVEROS
+  if (key.includes("LIBRETA")) return AVATARES.LIBRETAS
   return config.brand.logoSrc
 }
 

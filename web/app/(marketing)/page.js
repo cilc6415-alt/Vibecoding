@@ -4,6 +4,7 @@ import FinalCta from "@/components/landing/FinalCta"
 import Nosotros from "@/components/landing/Nosotros"
 import ComoPedir from "@/components/landing/ComoPedir"
 import Envios from "@/components/landing/Envios"
+import CuidadosTeaser from "@/components/landing/CuidadosTeaser"
 
 export default async function HomePage({ searchParams }) {
   const params = await searchParams
@@ -21,6 +22,7 @@ export default async function HomePage({ searchParams }) {
       <FinalCta showActions={false} align="left" />
       <ComoPedir />
       <Envios />
+      <CuidadosTeaser />
     </>
   )
 }

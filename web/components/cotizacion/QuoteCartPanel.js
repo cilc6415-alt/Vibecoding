@@ -59,6 +59,9 @@ export default function QuoteCartPanel({
                 {etiquetaPersonalizacion(item.personalizationType)}
                 {item.personalizationText ? ` — ${item.personalizationText}` : ""}
               </p>
+              {item.designNotes && (
+                <p className="text-base-content/60">Diseño: {item.designNotes}</p>
+              )}
               <p className="mt-1 font-medium">Cantidad: {item.quantity}</p>
               {item.unitPrice != null && (
                 <p className="mt-1 font-semibold text-primary">

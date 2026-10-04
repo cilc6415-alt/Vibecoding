@@ -48,6 +48,7 @@ export async function POST(request) {
       unit_price: item.unitPrice ?? null,
       personalization_type: item.personalizationType,
       personalization_text: item.personalizationText,
+      design_notes: item.designNotes || null,
       quantity: item.quantity,
     }))
 
