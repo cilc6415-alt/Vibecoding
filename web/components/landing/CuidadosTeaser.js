@@ -1,12 +1,15 @@
 import Link from "next/link"
-import { Hand, Sun } from "lucide-react"
 import config from "@/config"
-import ThermometerCuidadoIcon from "@/components/cuidados/ThermometerCuidadoIcon"
+import {
+  IconoMano,
+  IconoSol,
+  IconoTermometro,
+} from "@/components/cuidados/CuidadosResinaIcons"
 
 const ICONOS = [
-  { id: "limpieza", anim: "wipe", Icon: Hand },
-  { id: "sol", anim: "sun", Icon: Sun },
-  { id: "temperatura", anim: "thermo", Icon: ThermometerCuidadoIcon },
+  { id: "limpieza", Icon: IconoMano, iconClass: "size-8" },
+  { id: "sol", Icon: IconoSol, iconClass: "size-7" },
+  { id: "temperatura", Icon: IconoTermometro, iconClass: "size-7" },
 ]
 
 export default function CuidadosTeaser() {
@@ -21,14 +24,12 @@ export default function CuidadosTeaser() {
         <div className="cuidado-teaser flex flex-col gap-5 rounded-2xl border border-[#E8DFD4] bg-[#F5F0E8] px-5 py-5 md:flex-row md:items-center md:justify-between md:gap-8 md:px-7 md:py-5">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2.5 text-primary" aria-hidden>
-              {ICONOS.map(({ id, anim, Icon }) => (
+              {ICONOS.map(({ id, Icon, iconClass }) => (
                 <span
                   key={id}
-                  className="flex size-9 items-center justify-center overflow-visible rounded-full bg-primary/10"
+                  className="flex size-9 items-center justify-center overflow-hidden rounded-full bg-primary/10"
                 >
-                  <span className={`cuidado-icon cuidado-icon--${anim} inline-flex`}>
-                    <Icon className="size-4 stroke-[1.6]" />
-                  </span>
+                  <Icon className={iconClass} />
                 </span>
               ))}
             </div>

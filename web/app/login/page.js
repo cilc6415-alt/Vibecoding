@@ -24,7 +24,7 @@ export default async function LoginPage({ searchParams }) {
           {config.brand.logoText.toUpperCase()}
         </Link>
 
-        <h1 className="mt-6 text-2xl font-bold tracking-tight">Panel IVCA Crafts</h1>
+        <h1 className="mt-6 text-2xl font-bold tracking-tight">Panel IVCA CRAFTS</h1>
         <p className="mt-2 text-sm text-base-content/70">
           Acceso exclusivo para administrar cotizaciones.
         </p>

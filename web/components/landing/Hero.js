@@ -19,7 +19,7 @@ export default function Hero() {
             loop
             playsInline
             preload="auto"
-            aria-label="Galería de piezas IVCA Crafts"
+            aria-label="Galería de piezas IVCA CRAFTS"
           />
         </div>
       )}

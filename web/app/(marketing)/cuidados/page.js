@@ -3,7 +3,7 @@ import { urlWhatsappGeneral } from "@/lib/quotes"
 import CuidadosCards from "@/components/cuidados/CuidadosCards"
 
 export const metadata = {
-  title: `Cuidados · ${config.brand.logoText}`,
+  title: "Cuidados",
   description: config.ivca.cuidados.intro,
 }
 

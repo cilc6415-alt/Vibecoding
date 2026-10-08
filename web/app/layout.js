@@ -43,7 +43,7 @@ export const metadata = {
   metadataBase: getMetadataBase(),
   title: {
     default: config.app.name,
-    template: `%s · ${config.app.name}`,
+    template: `%s | ${config.app.name}`,
   },
   description: shareDescription,
   openGraph: {

@@ -5,10 +5,9 @@ import {
   selectionKey,
 } from "@/lib/catalog"
 import QuoteWizard from "@/components/cotizacion/QuoteWizard"
-import config from "@/config"
 
 export const metadata = {
-  title: `Cotizar · ${config.brand.logoText}`,
+  title: "Cotizar",
 }
 
 export default async function CotizarPage({ searchParams }) {

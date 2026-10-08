@@ -355,166 +355,142 @@ h4,
 }
 
 /* ------------------------------------------------------------
-   Cuidados — animaciones discretas solo en hover/focus
+   Cuidados — animaciones solo en las tarjetas grandes
    ------------------------------------------------------------ */
-.cuidado-icon {
-  transform-origin: center;
+.resina-check {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
 }
 
-.cuidado-teaser:hover .cuidado-icon--wipe,
-.cuidado-teaser:focus-within .cuidado-icon--wipe,
-.cuidado-card:hover .cuidado-icon--wipe,
-.cuidado-card:focus-within .cuidado-icon--wipe {
-  animation: cuidado-wipe 0.55s ease-in-out 1;
-}
-
-.cuidado-card:hover .cuidado-icon--ban .cuidado-icon__overlay,
-.cuidado-card:focus-within .cuidado-icon--ban .cuidado-icon__overlay {
-  animation: cuidado-ban-pulse 0.5s ease-in-out 1;
-}
-
-.cuidado-card:hover .cuidado-icon--shield,
-.cuidado-card:focus-within .cuidado-icon--shield {
-  animation: cuidado-shield 0.45s ease-in-out 1;
-}
-
-/* Sol en /cuidados: giro corto (lenguaje de la página completa) */
-.cuidado-card:hover .cuidado-icon--sun,
-.cuidado-card:focus-within .cuidado-icon--sun {
-  animation: cuidado-sun 0.7s ease-in-out 1;
-}
-
-/* Sol en teaser de Inicio: pulso/expansión de rayos (más legible a tamaño pequeño) */
-.cuidado-teaser:hover .cuidado-icon--sun,
-.cuidado-teaser:focus-within .cuidado-icon--sun {
-  animation: cuidado-sun-pulse 0.55s ease-in-out 1;
-}
-
-.cuidado-card:hover .cuidado-icon--droplet,
-.cuidado-card:focus-within .cuidado-icon--droplet {
-  animation: cuidado-droplet 0.55s ease-in-out 1;
-}
-
-.cuidado-thermo-level {
+.cuidado-card .resina-level {
   transform-box: fill-box;
-  transform-origin: bottom center;
-  transform: scaleY(0.55);
+  transform-origin: center bottom;
+  transform: scaleY(0.72);
 }
 
-.cuidado-teaser .cuidado-thermo-heat__line {
-  opacity: 0.7;
+.cuidado-card:hover .resina-cloth,
+.cuidado-card:focus-within .resina-cloth {
+  animation: resina-wipe 0.7s ease-in-out 1;
 }
 
-.cuidado-teaser:hover .cuidado-thermo-level,
-.cuidado-teaser:focus-within .cuidado-thermo-level,
-.cuidado-card:hover .cuidado-thermo-level,
-.cuidado-card:focus-within .cuidado-thermo-level {
-  animation: cuidado-thermo-level 0.65s ease-out 1 forwards;
+.cuidado-card:hover .resina-ban,
+.cuidado-card:focus-within .resina-ban {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: resina-ban 0.45s ease-in-out 1;
 }
 
-.cuidado-teaser:hover .cuidado-thermo-heat__line,
-.cuidado-teaser:focus-within .cuidado-thermo-heat__line,
-.cuidado-card:hover .cuidado-thermo-heat__line,
-.cuidado-card:focus-within .cuidado-thermo-heat__line {
-  animation: cuidado-thermo-heat 0.55s ease-in-out 1;
+.cuidado-card:hover .resina-check,
+.cuidado-card:focus-within .resina-check {
+  animation: resina-check 0.55s ease-out 1;
 }
 
-.cuidado-teaser:hover .cuidado-thermo-heat__line:nth-child(2),
-.cuidado-teaser:focus-within .cuidado-thermo-heat__line:nth-child(2),
-.cuidado-card:hover .cuidado-thermo-heat__line:nth-child(2),
-.cuidado-card:focus-within .cuidado-thermo-heat__line:nth-child(2) {
-  animation-delay: 0.06s;
+.cuidado-card:hover .resina-rays,
+.cuidado-card:focus-within .resina-rays {
+  animation: resina-rays 0.7s ease-in-out 1;
 }
 
-.cuidado-teaser:hover .cuidado-thermo-heat__line:nth-child(3),
-.cuidado-teaser:focus-within .cuidado-thermo-heat__line:nth-child(3),
-.cuidado-card:hover .cuidado-thermo-heat__line:nth-child(3),
-.cuidado-card:focus-within .cuidado-thermo-heat__line:nth-child(3) {
-  animation-delay: 0.12s;
+.cuidado-card:hover .resina-drop,
+.cuidado-card:focus-within .resina-drop {
+  transform-box: fill-box;
+  transform-origin: center center;
+  animation: resina-drop 1.2s ease-in-out 0.15s 1;
 }
 
-@keyframes cuidado-wipe {
+.cuidado-card:hover .resina-level,
+.cuidado-card:focus-within .resina-level {
+  animation: resina-level 0.65s ease-out 1 forwards;
+}
+
+.cuidado-card:hover .resina-heat__line,
+.cuidado-card:focus-within .resina-heat__line {
+  animation: resina-heat 0.55s ease-in-out 1;
+}
+
+.cuidado-card:hover .resina-heat__line:nth-child(2),
+.cuidado-card:focus-within .resina-heat__line:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.cuidado-card:hover .resina-heat__line:nth-child(3),
+.cuidado-card:focus-within .resina-heat__line:nth-child(3) {
+  animation-delay: 0.16s;
+}
+
+@keyframes resina-wipe {
   0%,
   100% {
     transform: translateX(0);
   }
-  40% {
-    transform: translateX(3px);
+  35% {
+    transform: translateX(5px);
   }
   70% {
-    transform: translateX(-2px);
+    transform: translateX(-5px);
   }
 }
 
-@keyframes cuidado-ban-pulse {
+@keyframes resina-ban {
   0%,
   100% {
     transform: scale(1);
+  }
+  50% {
+    transform: scale(1.16);
+  }
+}
+
+@keyframes resina-check {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes resina-rays {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
-    transform: scale(1.18);
-    opacity: 0.9;
+    opacity: 0.35;
+    filter: drop-shadow(0 0 2px #c94a8a);
   }
 }
 
-@keyframes cuidado-shield {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.08);
-  }
-}
-
-@keyframes cuidado-sun {
+@keyframes resina-drop {
   0% {
-    transform: rotate(0deg);
+    transform: translateY(0) scaleY(1);
+  }
+  45% {
+    transform: translateY(8px) scaleY(1.12);
+  }
+  62% {
+    transform: translateY(8px) scaleY(1);
   }
   100% {
-    transform: rotate(28deg);
+    transform: translateY(0) scaleY(1);
   }
 }
 
-@keyframes cuidado-sun-pulse {
-  0%,
-  100% {
-    transform: scale(1);
+@keyframes resina-level {
+  from {
+    transform: scaleY(0.72);
   }
-  50% {
-    transform: scale(1.2);
-  }
-}
-
-@keyframes cuidado-droplet {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(3px);
-  }
-}
-
-@keyframes cuidado-thermo-level {
-  0% {
-    transform: scaleY(0.55);
-  }
-  100% {
+  to {
     transform: scaleY(1);
   }
 }
 
-@keyframes cuidado-thermo-heat {
+@keyframes resina-heat {
   0%,
   100% {
-    opacity: 0.55;
-    transform: translateX(0);
+    opacity: 0.45;
   }
   50% {
     opacity: 1;
-    transform: translateX(1.5px);
   }
 }
 
@@ -527,36 +503,28 @@ h4,
     transform: none !important;
   }
 
-  .cuidado-teaser:hover .cuidado-icon--wipe,
-  .cuidado-teaser:focus-within .cuidado-icon--wipe,
-  .cuidado-card:hover .cuidado-icon--wipe,
-  .cuidado-card:focus-within .cuidado-icon--wipe,
-  .cuidado-card:hover .cuidado-icon--ban .cuidado-icon__overlay,
-  .cuidado-card:focus-within .cuidado-icon--ban .cuidado-icon__overlay,
-  .cuidado-card:hover .cuidado-icon--shield,
-  .cuidado-card:focus-within .cuidado-icon--shield,
-  .cuidado-teaser:hover .cuidado-icon--sun,
-  .cuidado-teaser:focus-within .cuidado-icon--sun,
-  .cuidado-card:hover .cuidado-icon--sun,
-  .cuidado-card:focus-within .cuidado-icon--sun,
-  .cuidado-card:hover .cuidado-icon--droplet,
-  .cuidado-card:focus-within .cuidado-icon--droplet,
-  .cuidado-teaser:hover .cuidado-thermo-level,
-  .cuidado-teaser:focus-within .cuidado-thermo-level,
-  .cuidado-card:hover .cuidado-thermo-level,
-  .cuidado-card:focus-within .cuidado-thermo-level,
-  .cuidado-teaser:hover .cuidado-thermo-heat__line,
-  .cuidado-teaser:focus-within .cuidado-thermo-heat__line,
-  .cuidado-card:hover .cuidado-thermo-heat__line,
-  .cuidado-card:focus-within .cuidado-thermo-heat__line {
+  .cuidado-card:hover .resina-cloth,
+  .cuidado-card:focus-within .resina-cloth,
+  .cuidado-card:hover .resina-ban,
+  .cuidado-card:focus-within .resina-ban,
+  .cuidado-card:hover .resina-check,
+  .cuidado-card:focus-within .resina-check,
+  .cuidado-card:hover .resina-rays,
+  .cuidado-card:focus-within .resina-rays,
+  .cuidado-card:hover .resina-drop,
+  .cuidado-card:focus-within .resina-drop,
+  .cuidado-card:hover .resina-level,
+  .cuidado-card:focus-within .resina-level,
+  .cuidado-card:hover .resina-heat__line,
+  .cuidado-card:focus-within .resina-heat__line {
     animation: none !important;
   }
 
-  .cuidado-teaser .cuidado-thermo-level {
-    transform: scaleY(0.85);
+  .cuidado-card .resina-level {
+    transform: none;
   }
 
-  .cuidado-thermo-level {
-    transform: scaleY(0.85);
+  .resina-check {
+    stroke-dashoffset: 0;
   }
 }

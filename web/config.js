@@ -22,7 +22,7 @@ const config = {
   // Identidad del producto
   // -----------------------------------------------------------
   app: {
-    name: "IVCA Crafts",
+    name: "IVCA CRAFTS",
     description:
       "Termos, fundas, llaveros y libretas personalizados, pintados a mano para regalos únicos con valor emocional.",
     domain: "ivcacrafts.com", // sin https://, sin www
@@ -41,7 +41,7 @@ const config = {
     // Rosa un poco más claro (como se percibe el texto "Arma tu pedido").
     primarySoft: "#D66BA0",
     // Logo: puede ser texto o ruta a /public/logo.svg
-    logoText: "IVCA Crafts",
+    logoText: "IVCA CRAFTS",
     logoSrc: "/logo-ivca-mark.png",
     // Estilo del bordeado global (DaisyUI usa esto para botones, cards)
     radius: "1rem",
@@ -322,16 +322,33 @@ const config = {
     envios: {
       eyebrow: "Envíos",
       title: "Entrega y tiempos",
-      paragraphs: [
-        "Entrega personal en la ciudad de Chihuahua, Chih. Hacemos envíos a toda la República Mexicana con costo adicional, que se calcula según tu ciudad y se confirma por WhatsApp antes de iniciar tu pieza.",
-        "Tiempo de elaboración: 7 a 15 días hábiles (la resina necesita su tiempo de curado).",
+      blocks: [
+        {
+          heading: "Entregas en Chihuahua",
+          paragraphs: [
+            "Realizamos entregas personales previamente acordadas en la ciudad de Chihuahua, Chih.",
+          ],
+        },
+        {
+          heading: "Envíos nacionales",
+          paragraphs: [
+            "Podemos realizar envíos a otras ciudades de la República Mexicana, sujetos a confirmación de disponibilidad, cobertura y costo.",
+            "Antes de aceptar el pedido, revisaremos con el cliente las opciones de envío y confirmaremos el importe correspondiente por WhatsApp.",
+          ],
+        },
+        {
+          heading: "Tiempo de elaboración",
+          paragraphs: [
+            "El tiempo estimado de elaboración es de 7 a 15 días hábiles, dependiendo del producto y su personalización. El plazo definitivo se confirma antes de iniciar el pedido.",
+          ],
+        },
       ],
     },
     nosotros: {
       eyebrow: "Sobre nosotros",
       title: "Piezas únicas pintadas a mano, nunca dos iguales",
       paragraphs: [
-        "En IVCA Crafts pintamos cada termo y cada funda a mano con tinta al alcohol. La tinta se mueve libremente, así que ningún marmoleado se repite: tu pieza es literalmente irrepetible.",
+        "En IVCA CRAFTS pintamos cada termo y cada funda a mano con tinta al alcohol. La tinta se mueve libremente, así que ningún marmoleado se repite: tu pieza es literalmente irrepetible.",
         "También elaboramos libretas artesanales cosidas a mano, de pasta dura y portada personalizada. Cada trabajo se sella con resina epoxi o se imprime con cuidado, según la pieza. Todo se elabora en nuestro taller en Chihuahua, Chih.",
       ],
       highlights: [
@@ -343,14 +360,14 @@ const config = {
     redes: {
       eyebrow: "Comunidad",
       title: "Síguenos en redes",
-      subtitle: "Mira trabajos recientes, procesos y novedades de IVCA Crafts.",
+      subtitle: "Mira trabajos recientes, procesos y novedades de IVCA CRAFTS.",
     },
     cuidados: {
       title: "Cuidados de tu producto",
       intro:
-        "Cada pieza IVCA Crafts está elaborada y decorada a mano. Sigue estas recomendaciones para conservar su diseño y acabado en mejores condiciones por más tiempo.",
+        "Cada pieza IVCA CRAFTS está elaborada y decorada a mano. Sigue estas recomendaciones para conservar su diseño y acabado en mejores condiciones por más tiempo.",
       teaser: {
-        title: "Cuida tu pieza IVCA Crafts",
+        title: "Cuida tu pieza IVCA CRAFTS",
         body: "Cada pieza artesanal merece un poco de cuidado para conservar su acabado en mejores condiciones por más tiempo.",
         ctaLabel: "Ver recomendaciones de cuidado",
         ctaHref: "/cuidados",
@@ -452,7 +469,7 @@ const config = {
       },
       unicaTitle: "Una pieza hecha a mano es única",
       unicaBody: [
-        "Los productos IVCA Crafts son elaborados y personalizados artesanalmente. Por la naturaleza de los materiales y técnicas utilizadas, pueden existir pequeñas variaciones entre una pieza y otra.",
+        "Los productos IVCA CRAFTS son elaborados y personalizados artesanalmente. Por la naturaleza de los materiales y técnicas utilizadas, pueden existir pequeñas variaciones entre una pieza y otra.",
         "Los colores y acabados también pueden presentar cambios graduales con el paso del tiempo y la exposición al ambiente. Seguir estas recomendaciones ayudará a conservar tu pieza en mejores condiciones.",
       ],
       ctaTitle: "¿Tienes dudas sobre el cuidado de tu producto?",
@@ -543,7 +560,7 @@ const config = {
       title: "Creado para quienes buscan algo único",
       logo: {
         src: "/logo-ivca.png",
-        alt: "IVCA Crafts",
+        alt: "IVCA CRAFTS",
       },
       placeholderCount: 3,
     },
@@ -676,7 +693,7 @@ const config = {
     },
     footer: {
       tagline:
-        "IVCA Crafts · termos, fundas, llaveros y libretas personalizados en Chihuahua, Chih.",
+        "IVCA CRAFTS · termos, fundas, llaveros y libretas personalizados en Chihuahua, Chih.",
       columns: [
         {
           title: "Producto",
